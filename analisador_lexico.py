@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 #
 # Pedro Vitor Jhum Haramoto RA: 161024157
-# João Pedro Marin Comini   RA: 
+# João Pedro Marin Comini   RA:
 #
 
 #
@@ -30,7 +31,7 @@ class afd_lexico():
         self.tipo_numero = 3    #se tipo_numero = 3 -> inteiro
                                 #se tipo_numero = 4 -> float
 
-        if(self.abre_arquivo('apostila/correto.txt')):
+        if(self.abre_arquivo('correto.txt')):
             self.estado_inicial(self.buffer)
         else:
             print('erro ao abrir o arquivo!')
@@ -87,7 +88,6 @@ class afd_lexico():
 
             else:
                 self.saida(self.estado_9(chr))
-
     #
     #
     #
@@ -231,7 +231,6 @@ class afd_lexico():
             return self.tipo_numero
         else:
             return self.tipo_numero
-
     #
     #
     #
