@@ -27,7 +27,7 @@ begin
 		b:=10*c;
 		c:=a div b
 		write("oioioioi",c);
-		read('aaaa',&d);
+		read('aaaa',#&d);
 	end;
 	while (a>1)
 	begin
