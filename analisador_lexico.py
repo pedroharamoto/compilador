@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# Pedro Vitor Jhum Haramoto RA: 161024157
+# João Pedro Marin Comini   RA: 
+#
 
 #
 #   INICIO DA CLASSE AFD_LEXICO()
