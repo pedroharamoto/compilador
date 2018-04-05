@@ -528,4 +528,4 @@ class afd_lexico():
 #
 # FIM DA CLASSE
 #
-analisador = afd_lexico()
+tokens = afd_lexico()
