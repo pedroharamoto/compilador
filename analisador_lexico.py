@@ -121,7 +121,7 @@ class afd_lexico():
         elif(codigo == 4): # NUMERO FLOAT
             print('<', self.buffer, ', NUM FLOAT > linha: ' , self.linha)
 
-        elif(codigo == 5):
+        elif(codigo == 5): # PONTUACAO
             print('<', self.buffer, ', SIMBOLO DE PONTUACAO > linha: ' , self.linha)
 
         elif(codigo == 6):
