@@ -13,6 +13,8 @@ class afd_lexico():
 
     def __init__(self):
         #
+
+        #variavel para a tabela de palavras reservadas
         self.palavras_reservadas = ['and','array','asm','begin','case','const','constructor',
                                       'destructor','div','do','downto','else','end','file','for'
                                       ,'foward','function','goto','if','implementation','in','inline'
@@ -20,12 +22,24 @@ class afd_lexico():
                                       ,'procedure','program','read','record','repeat','set','shl','shr','string'
                                       ,'then','to','type','unit','until','uses','var','while','with','write','xor'
                                       ]
+        #variavel para a tabela de simbolos de pontuacao
         self.simbolos_pontuacao = ["(", ")", ",", ".", "..", ":", ";", "[", "]", "ˆ"]
+
+        #variavel para a tabela de simbolos de relação
         self.simbolos_relacao = ["<", "<=", "<>", "=", ">", ">="]
+
+        #variavel para a tabela de simbolos aritmeticos
         self.simbolos_arit = ['%','*','+','-','/']
+
+        #variavel para guardar o codigo fonte do programa a ser analisado
         self.codigo_fonte = ''
+
+        #variavel para retornar o token ao analisador sintatico
         self.buffer = ''
+
+        #variavel para armazenar a posicao lida do codigo fonte
         self.pos_chr = 0
+
         self.linha = 1
         self.file_size = 0
         self.tipo_numero = 3    #se tipo_numero = 3 -> inteiro
@@ -53,6 +67,8 @@ class afd_lexico():
     def estado_inicial(self,chr):
 
         while(self.codigo_fonte[self.pos_chr] != '\0'):
+
+            #
             self.buffer = ''
 
             chr = self.codigo_fonte[self.pos_chr]
@@ -72,22 +88,22 @@ class afd_lexico():
                 self.saida(0) ### ESTADO 0 -> ??? ESPACO EM BRANCO
 
             elif(self.isArit(chr)):
-                self.saida(self.estado_8(chr))
+                self.saida(self.estado_8(chr)) #ESTADO PARA OS SIMBOLOS ARITMETICOS
 
             elif(self.isPontSymbol(chr)):
-                self.saida(self.estado_6(chr))
+                self.saida(self.estado_6(chr)) #ESTADO PARA OS SIMBOLOS DE PONTUAÇÃO
 
             elif(self.isPontRela(chr)):
-                self.saida(self.estado_7(chr))
+                self.saida(self.estado_7(chr)) #ESTADO PARA OS SIMBOLOS DE RELACAO
 
             elif(chr == '"'):
-                self.saida(self.estado_10(chr))
+                self.saida(self.estado_10(chr)) #ESTADO PARA STRING
 
             elif(chr == "'"):
-                self.saida(self.estado_11(chr))
+                self.saida(self.estado_11(chr)) #ESTADO PARA STRING
 
             else:
-                self.saida(self.estado_9(chr))
+                self.saida(self.estado_9(chr)) #ESTADO PARA OS CARACTERES INVALIDOS
     #
     #
     #
