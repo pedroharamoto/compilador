@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-#data de inicio: 05/05/2018
 #
 # Pedro Vitor Jhum Haramoto RA: 161024157
 # João Pedro Marin Comini   RA: 161020551
