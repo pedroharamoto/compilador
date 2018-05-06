@@ -1,0 +1,13 @@
+program exemplo;
+var
+a,b,c : integer;
+
+begin
+
+	read(a);
+	b := 4;
+	c := b + a;
+	write(a);
+	write(b);
+
+end.
