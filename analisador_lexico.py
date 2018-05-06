@@ -56,7 +56,7 @@ class afd_lexico():
         self.tipo_numero = 3    #se tipo_numero = 3 -> inteiro
                                 #se tipo_numero = 4 -> float
 
-        if(self.abre_arquivo('correto.txt')):
+        if(self.abre_arquivo('prog_teste.txt')):
             self.estado_inicial(self.buffer)
         else:
             print('erro ao abrir o arquivo!')
