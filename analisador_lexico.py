@@ -563,7 +563,7 @@ class afd_lexico():
 
 #
 #
-#o codigo comentado, a seguir, é apenas um exemplo de leitura dos tokens
+#o codigo comentado abaixo é apenas um exemplo de leitura dos tokens
 #tokens = afd_lexico().get_tokens()
 #for (i, token) in enumerate(tokens):
 #    print(token[2],":")
