@@ -13,7 +13,18 @@ class afd_lexico():
 
     def __init__(self):
         #
-
+        #
+        #tab.tokens é a "tabela" com todos os tokens
+        #ela funciona assim:
+        #[token,tipo,linha]
+        #por exemplo >>> tab_token[1] = ['program','RESERVADA',1]
+        #tab_token[0][1] = 'RESERVADA'
+        #
+        #
+        self.tab_tokens = []
+        #
+        #
+        #
         #variavel para a tabela de palavras reservadas
         self.palavras_reservadas = ['and','array','asm','begin','case','const','constructor',
                                       'destructor','div','do','downto','else','end','file','for'
@@ -107,55 +118,75 @@ class afd_lexico():
     #
     #
     #
+    def get_tokens(self):
+        return self.tab_tokens
+    #
+    #
+    #
     def saida(self,codigo):
-
         if(codigo == 1): # PALAVRA RESERVADA
-            print('<',self.buffer,', PALAVRA RESERVADA > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'PALAVRA_RESERVADA',self.linha])
+            #print('<',self.buffer,', PALAVRA RESERVADA > linha: ' , self.linha)
 
         elif(codigo == 2): # IDENTIFICADOR
-            print('<',self.buffer,', IDENTIFICADOR > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ID',self.linha])
+            #print('<',self.buffer,', IDENTIFICADOR > linha: ' , self.linha)
 
         elif(codigo == 3): # NUMERO INTEIRO
-            print('<',self.buffer,', NUM INTEIRO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'NUM_INT',self.linha])
+            #print('<',self.buffer,', NUM INTEIRO > linha: ' , self.linha)
 
         elif(codigo == 4): # NUMERO FLOAT
-            print('<', self.buffer, ', NUM FLOAT > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'NUM_FLOAT',self.linha])
+            #print('<', self.buffer, ', NUM FLOAT > linha: ' , self.linha)
 
         elif(codigo == 5): # PONTUACAO
-            print('<', self.buffer, ', SIMBOLO DE PONTUACAO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'SIMB_PONT',self.linha])
+            #print('<', self.buffer, ', SIMBOLO DE PONTUACAO > linha: ' , self.linha)
 
         elif(codigo == 6):
-            print('<', self.buffer, ', ERRO DE SIMBOLO DE PONTUACAO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ERR_SIMB_PONT',self.linha])
+            #print('<', self.buffer, ', ERRO DE SIMBOLO DE PONTUACAO > linha: ' , self.linha)
 
         elif(codigo == 7):
-            print('<', self.buffer, ', SIMBOLO DE RELACAO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'SIMB_REL',self.linha])
+            #print('<', self.buffer, ', SIMBOLO DE RELACAO > linha: ' , self.linha)
 
         elif(codigo == 8):
-            print('<', self.buffer, ', ERRO DE SIMBOLO DE RELACAO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ERR_SIMB_REL',self.linha])
+            #print('<', self.buffer, ', ERRO DE SIMBOLO DE RELACAO > linha: ' , self.linha)
 
         elif(codigo == 9):
-            print('<', self.buffer, ', SIMBOLO ARITMETICO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'SIMB_ARIT',self.linha])
+            #print('<', self.buffer, ', SIMBOLO ARITMETICO > linha: ' , self.linha)
 
         elif(codigo == 10):
-            print('<', self.buffer, ', ERRO DE SIMBOLO ARITMETICO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ERR_SIMB_ARIT',self.linha])
+            #print('<', self.buffer, ', ERRO DE SIMBOLO ARITMETICO > linha: ' , self.linha)
 
         elif(codigo == 11):
-            print('<', self.buffer, ', ATRIBUICAO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ATT',self.linha])
+            #print('<', self.buffer, ', ATRIBUICAO > linha: ' , self.linha)
 
         elif(codigo == 12):
-            print('<', self.buffer, ', STRING ASPAS DUPLAS > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'STRING1',self.linha])
+            #print('<', self.buffer, ', STRING ASPAS DUPLAS > linha: ' , self.linha)
 
         elif(codigo == 13):
-            print('<', self.buffer, ', STRING ASPAS SIMPLES> linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'STRING2',self.linha])
+            #print('<', self.buffer, ', STRING ASPAS SIMPLES> linha: ' , self.linha)
 
         elif(codigo == 191):
-            print('<',self.buffer,', ERRO NUM INTEIRO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ERR_NUM_INT',self.linha])
+            #print('<',self.buffer,', ERRO NUM INTEIRO > linha: ' , self.linha)
 
         elif(codigo == 192):
-            print('<',self.buffer,', ERRO NUM FLOAT > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ERR_NUM_FLOAT',self.linha])
+            #print('<',self.buffer,', ERRO NUM FLOAT > linha: ' , self.linha)
 
         elif(codigo == 193):
-            print('<',self.buffer,', ERRO DE CARACTERE INVALIDO > linha: ' , self.linha)
+            self.tab_tokens.append([self.buffer,'ERR_CARAC_INVALID',self.linha])
+            #print('<',self.buffer,', ERRO DE CARACTERE INVALIDO > linha: ' , self.linha)
 
         elif(codigo == 0): # ESPACO EM BRANCO
             pass
@@ -528,4 +559,12 @@ class afd_lexico():
 #
 # FIM DA CLASSE
 #
-tokens = afd_lexico()
+
+tokens = afd_lexico().get_tokens()
+#
+#
+#o codigo comentado, a seguir, é apenas um exemplo de leitura dos tokens
+#for (i, token) in enumerate(tokens):
+#    print(token[2],":")
+#    for (j, elemento) in enumerate(token):
+#        print("\t",elemento)
