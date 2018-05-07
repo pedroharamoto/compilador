@@ -29,7 +29,7 @@ class afd_lexico():
         self.palavras_reservadas = ['and','array','asm','begin','case','const','constructor',
                                       'destructor','div','do','downto','else','end','file','for'
                                       ,'foward','function','goto','if','implementation','in','inline'
-                                      ,'interface','label','mod','nil','not','object','of','or','packed'
+                                      ,'integer','interface','label','mod','nil','not','object','of','or','packed'
                                       ,'procedure','program','read','record','repeat','set','shl','shr','string'
                                       ,'then','to','type','unit','until','uses','var','while','with','write','xor'
                                       ]
@@ -56,7 +56,7 @@ class afd_lexico():
         self.tipo_numero = 3    #se tipo_numero = 3 -> inteiro
                                 #se tipo_numero = 4 -> float
 
-        if(self.abre_arquivo('prog_teste.txt')):
+        if(self.abre_arquivo('p2.txt')):
             self.estado_inicial(self.buffer)
         else:
             print('erro ao abrir o arquivo!')
@@ -441,7 +441,6 @@ class afd_lexico():
         self.pos_chr += 1
         isSymbol = 8
 
-
         while 1:
 
             chr = self.codigo_fonte[self.pos_chr]
@@ -451,7 +450,7 @@ class afd_lexico():
                 self.pos_chr += 1
                 isSymbol = 7
                 break #### voltar
-            elif(str.isalnum(chr)):
+            elif(str.isalnum(chr) or chr == ' '):
                 isSymbol = 7
                 break
             else:
@@ -562,7 +561,10 @@ class afd_lexico():
 # FIM DA CLASSE
 #
 
+#tokens = afd_lexico().create_table_token()
 
+#for (i,token) in enumerate(tokens):
+#    print(token)
 #
 #
 #o codigo comentado abaixo é apenas um exemplo de leitura dos tokens
