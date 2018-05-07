@@ -118,7 +118,9 @@ class afd_lexico():
     #
     #
     #
-    def get_tokens(self):
+    def create_table_token(self):
+        self.tab_tokens.append(['&','&','&'])
+        #esse append serve para adicionar um 'final' ao codigo, que será util no analisador sintatico
         return self.tab_tokens
     #
     #
