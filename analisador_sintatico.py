@@ -61,6 +61,7 @@ class a_sintatico():
     #
     def plvr_reservada(self):
         #
+        #print(self.token)
         if(self.token[1] == 'PALAVRA_RESERVADA'):
             self.token = self.get_token()
             self.plvr_reservada()
@@ -71,6 +72,7 @@ class a_sintatico():
                 self.token = self.get_token()
                 self.plvr_reservada()
             else:
+                print(self.token)
                 self.token = self.get_token()
         #
         elif(self.token[1] == 'ID' or self.token[1] == 'SIMB_REL' or self.token[1] == 'ATT' or self.token[1] == 'NUM_INT' or self.token[1] == 'SIMB_ARIT'):
@@ -83,7 +85,8 @@ class a_sintatico():
     #
     #
     def sim_pont(self):
-        if(self.token == '.' or self.token == ';'):
+        if(self.token[0] == '.' or self.token[0] == ';'):
+            #print(self.token)
             return 1 # 1 == terminal
         else:
             return 0 # 0 == nao terminal
