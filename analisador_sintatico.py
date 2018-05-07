@@ -22,11 +22,14 @@ class a_sintatico():
     def __init__(self, tokens):
         #construtor
         self.tab_tokens = tokens
+        self.token = self.get_token() #ja pega o primeiro token
     #
     #
     #
     def get_token(self):
-        return (self.tab_tokens.pop(0))
+        #essa função irá retornar o token que está no topo da pilha
+        if(len(self.tab_tokens) != 0):
+            return (self.tab_tokens.pop(0))
         #
         # a função pop(p1) remove e retorna um elemento da lista
         # p1 é um parametro para a posição da lista
@@ -39,16 +42,48 @@ class a_sintatico():
     #
     def show_tokens(self):
         #mostra os tokens
-        token = self.get_token()
-
-        while(token != ['&','&','&']):
+        while(self.token != ['&','&','&']):
             # o elemento ['&','&','&'] é o final da lista
-            print(token)
-            token = self.get_token()
+            print(self.token)
+            self.token = self.get_token()
+    #
+    #
+    #
+    def inicio(self):
+        #mostra os tokens
+
+        while(self.token != ['&','&','&'] and (self.token)):
+            # o elemento ['&','&','&'] é o final da lista
+
+            if(self.token[1] == "PALAVRA_RESERVADA"):
+                print('palavra reservada')
+                self.token = self.get_token()
+                self.plvr_reservada()
+
+            self.token = self.get_token()
+    #
+    #
+    #
+    def plvr_reservada(self):
+
+        if(self.token[1] == 'SIMB_PONT'):
+            self.token = self.get_token()
+
+        elif(self.token[1] == 'ID'):
+            print(self.token)
+            self.token = self.get_token()
+            self.plvr_reservada()
+
+    #
+    #
+    #
 
 
 
+#
+# FIM DA CLASSE DO ANALISADOR SINTATICO
+#
 
 sintatico = a_sintatico(tokens)
 
-sintatico.show_tokens()
+sintatico.inicio()
