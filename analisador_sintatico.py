@@ -10,7 +10,7 @@
 import analisador_lexico
 
 #gerando a tabela de tokens com a função get_tokens da classe do analisador lexico
-tokens = analisador_lexico.afd_lexico().get_tokens()
+tokens = analisador_lexico.afd_lexico().create_table_token()
 
 #
 #   INICIO DA CLASSE A_SINTATICO()
@@ -21,15 +21,34 @@ class a_sintatico():
     #
     def __init__(self, tokens):
         #construtor
-        self.show_tokens(tokens)
+        self.tab_tokens = tokens
     #
     #
     #
-    def show_tokens(self, tokens):
+    def get_token(self):
+        return (self.tab_tokens.pop(0))
+        #
+        # a função pop(p1) remove e retorna um elemento da lista
+        # p1 é um parametro para a posição da lista
+        # se p1 não for especificado, pop() irá retornar e remover o ultimo elemento da lista
+        # por isso vamos usar pop(0) para retornar e remover sempre o primeiro elemento
+        #
+        #
+    #
+    #
+    #
+    def show_tokens(self):
         #mostra os tokens
-        for (i, token) in enumerate(tokens):
-            print(token[2],":")
-            for (j, elemento) in enumerate(token):
-               print("\t",elemento)
+        token = self.get_token()
 
-re = a_sintatico(tokens)
+        while(token != ['&','&','&']):
+            # o elemento ['&','&','&'] é o final da lista
+            print(token)
+            token = self.get_token()
+
+
+
+
+sintatico = a_sintatico(tokens)
+
+sintatico.show_tokens()
