@@ -44,7 +44,7 @@ class a_sintatico():
     #
     #
     #
-    def show_pens(self):
+    def show_saida(self):
         for (i,linha) in enumerate(self.pensamento):
             print(linha)
     #
@@ -120,5 +120,5 @@ class a_sintatico():
 sintatico = a_sintatico(tokens)
 
 sintatico.inicio()
-sintatico.show_pens()
+sintatico.show_saida()
 #sintatico.show_tokens()
