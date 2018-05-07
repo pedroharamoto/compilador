@@ -1,0 +1,14 @@
+program exemplo;
+var
+a,b,c : integer;
+
+begin
+
+	read(a);
+	read(b);
+	if(a > b) then begin
+		b := a;
+		a := b;
+	end
+
+end.
