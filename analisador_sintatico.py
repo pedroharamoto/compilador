@@ -21,6 +21,10 @@ class a_sintatico():
     #
     def __init__(self, tokens):
         #construtor
+        self.pos_linha = 0
+        self.pos_coluna = 0
+        self.buffer = []
+        self.pensamento = ()
         self.tab_tokens = tokens
         self.token = self.get_token() #ja pega o primeiro token
     #
@@ -37,6 +41,12 @@ class a_sintatico():
         # por isso vamos usar pop(0) para retornar e remover sempre o primeiro elemento
         #
         #
+    #
+    #
+    #
+    def show_pens(self):
+        for (i,linha) in enumerate(self.pensamento):
+            print(linha)
     #
     #
     #
@@ -61,10 +71,19 @@ class a_sintatico():
     #
     def plvr_reservada(self):
         #
-        #print(self.token)
+        self.buffer.append(self.token[0])
+        #
         if(self.token[1] == 'PALAVRA_RESERVADA'):
+
+            if(self.token[0] == 'begin' or self.token[0] == 'end'):
+                self.pensamento = self.pensamento + (self.buffer,)
+                self.buffer = []
+                self.pos_linha = self.pos_linha + 1
+
             self.token = self.get_token()
             self.plvr_reservada()
+
+
         #
         elif(self.token[1] == 'SIMB_PONT'):
             terminal = self.sim_pont()
@@ -72,7 +91,9 @@ class a_sintatico():
                 self.token = self.get_token()
                 self.plvr_reservada()
             else:
-                print(self.token)
+                self.pensamento = self.pensamento + (self.buffer,)
+                self.buffer = []
+                self.pos_linha = self.pos_linha + 1
                 self.token = self.get_token()
         #
         elif(self.token[1] == 'ID' or self.token[1] == 'SIMB_REL' or self.token[1] == 'ATT' or self.token[1] == 'NUM_INT' or self.token[1] == 'SIMB_ARIT'):
@@ -99,5 +120,5 @@ class a_sintatico():
 sintatico = a_sintatico(tokens)
 
 sintatico.inicio()
-
+sintatico.show_pens()
 #sintatico.show_tokens()
