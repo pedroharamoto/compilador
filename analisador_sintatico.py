@@ -59,10 +59,10 @@ class a_sintatico():
     #
     def inicio(self):
 
-        while(self.token != ['&','&','&'] and self.token):
-            self.progr()
-            self.bloco()
-            self.token = self.get_token()
+        #while(self.token != ['&','&','&'] and self.token):
+        self.progr()
+        self.bloco()
+        #self.token = self.get_token()
         #
         self.show_saida()
     #
@@ -89,8 +89,14 @@ class a_sintatico():
                     return
                 else:
                     self.err(";",self.token[0])
+            #
             else:
                 self.err(";",self.token[0])
+        #
+        elif(self.token[0] == '.'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
     #
     #
     #
@@ -137,9 +143,31 @@ class a_sintatico():
             self.buffer = []
             #
             self.token = self.get_token()
+            #
             self.statm()
+            #
+            if(self.token[0] == ';'):
+                self.token = self.get_token()
+                #
+                while(self.token[0] != 'end' and self.token[0] != '&'):
+                    self.statm()
+                    self.token = self.get_token()
+                #
+                self.statm()
+        #
+        elif(self.token[0] == 'end'):
+            self.buffer.append(self.token[0])
+            #
+            self.token = self.get_token()
+            self.statm()
+            #
         #
         elif(self.token[0] == ';'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+        #
+        elif(self.token[0] == '.'):
             self.buffer.append(self.token[0])
             self.pensamento += (self.buffer,)
             self.buffer = []
@@ -163,9 +191,17 @@ class a_sintatico():
                 #
                 self.statm()
                 #
-                #pode-se encontrar algum 'else', se encontrar:
+                #aqui pode-se encontrar algum 'else', se encontrar:
                 #deve-se voltar ao statm()
-                #
+                #porém, se receber um ';', indica fim do if
+                if(self.token[0] == 'else'):
+                    self.buffer.append(self.token[0])
+                    self.pensamento += (self.buffer,)
+                    self.buffer = []
+                    self.statm()
+            else:
+                self.err2(self.token)
+        #
         #
     #
     #
