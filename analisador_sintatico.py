@@ -65,16 +65,16 @@ class a_sintatico():
             self.progr()
             self.bloco()
 
-
-
-            print(self.pensamento,"\n")
             self.token = self.get_token()
-
+        self.show_saida()
     #
     #
     #
     def progr(self):
+        #
+        #regra para o inicio de um programa em pascal:::
         #progr ::= progr ID '(' {ID | ','}+ ')' ';' bloco '.'
+        #
         if(self.token[0] == 'program'):
             self.buffer.append(self.token[0])
             self.token = self.get_token()
@@ -99,6 +99,64 @@ class a_sintatico():
     def bloco(self):
         #
         self.var()
+        #
+        self.begin()
+    #
+    #
+    #
+    def begin(self):
+        #
+        #estado para ler a partir do begin de um codigo, até o ultimo end
+        #
+        if(self.token[0] == 'begin'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+            self.token = self.get_token()
+
+            self.statm()
+    #
+    #
+    #
+    def statm(self):
+        #
+        #estado para ler um statment
+        #
+        if(self.token[1] == 'ID'):
+
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+
+            if(self.token[0] == ':='):
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+                self.exp()
+    #
+    #
+    #
+    def exp(self):
+        #
+        #estado para ler uma expressao
+        #
+        if(self.token[0] == '('):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.exp();
+        #
+        elif(self.token[1] in ['NUM_INT','NUM_FLOAT','STRING1','STRING2','ID']):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.exp()
+        #
+        elif(self.token[0] == ')'):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.exp();
+        #
+        elif(self.token[0] == ';'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
     #
     #
     #
@@ -125,9 +183,9 @@ class a_sintatico():
                             self.buffer.append(self.token[0])
                             self.token = self.get_token()
                         else:
-                            self.err()
+                            self.err(";",self.token[0])
                     else:
-                        self.err()
+                        self.err(";",self.token[0])
 
                 if(self.token[0] == ':'):
                     self.buffer.append(self.token[0])
