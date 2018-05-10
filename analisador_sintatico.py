@@ -61,56 +61,11 @@ class a_sintatico():
     #
     def inicio(self):
         #mostra os tokens
-
-        while(self.token != ['&','&','&'] and (self.token)):
-            # o elemento ['&','&','&'] é o final da lista
-            self.plvr_reservada()
-
+        
     #
     #
     #
-    def plvr_reservada(self):
-        #
-        self.buffer.append(self.token[0])
-        #
-        if(self.token[1] == 'PALAVRA_RESERVADA'):
 
-            if(self.token[0] == 'begin' or self.token[0] == 'end'):
-                self.pensamento = self.pensamento + (self.buffer,)
-                self.buffer = []
-                self.pos_linha = self.pos_linha + 1
-
-            self.token = self.get_token()
-            self.plvr_reservada()
-
-
-        #
-        elif(self.token[1] == 'SIMB_PONT'):
-            terminal = self.sim_pont()
-            if(terminal == 0):
-                self.token = self.get_token()
-                self.plvr_reservada()
-            else:
-                self.pensamento = self.pensamento + (self.buffer,)
-                self.buffer = []
-                self.pos_linha = self.pos_linha + 1
-                self.token = self.get_token()
-        #
-        elif(self.token[1] == 'ID' or self.token[1] == 'SIMB_REL' or self.token[1] == 'ATT' or self.token[1] == 'NUM_INT' or self.token[1] == 'SIMB_ARIT'):
-            self.token = self.get_token()
-            self.plvr_reservada()
-        else:
-            if(self.token != ['&','&','&']):
-                print('erro sintatico',self.token[2])
-    #
-    #
-    #
-    def sim_pont(self):
-        if(self.token[0] == '.' or self.token[0] == ';'):
-            #print(self.token)
-            return 1 # 1 == terminal
-        else:
-            return 0 # 0 == nao terminal
 
 
 #
@@ -120,5 +75,5 @@ class a_sintatico():
 sintatico = a_sintatico(tokens)
 
 sintatico.inicio()
-sintatico.show_saida()
+#sintatico.show_saida()
 #sintatico.show_tokens()
