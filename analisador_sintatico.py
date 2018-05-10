@@ -52,10 +52,8 @@ class a_sintatico():
     #
     def show_tokens(self):
         #mostra os tokens
-        while(self.token != ['&','&','&']):
-            # o elemento ['&','&','&'] é o final da lista
-            print(self.token)
-            self.token = self.get_token()
+        for (i,linha) in enumerate(self.tab_tokens):
+            print(linha)
     #
     #
     #
@@ -131,6 +129,13 @@ class a_sintatico():
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
                 self.exp()
+                self.statm()
+        #
+        elif(self.token[0] == ';'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+            return
     #
     #
     #
@@ -146,6 +151,11 @@ class a_sintatico():
         elif(self.token[1] in ['NUM_INT','NUM_FLOAT','STRING1','STRING2','ID']):
             self.buffer.append(self.token[0])
             self.token = self.get_token()
+            self.termo()
+        #
+        elif(self.token[1] in ['SIMB_REL','SIMB_ARIT']):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
             self.exp()
         #
         elif(self.token[0] == ')'):
@@ -154,15 +164,20 @@ class a_sintatico():
             self.exp();
         #
         elif(self.token[0] == ';'):
-            self.buffer.append(self.token[0])
-            self.pensamento += (self.buffer,)
-            self.buffer = []
+            return
+        else:
+            self.err2(self.token)
+    #
+    #
+    #
+    def termo(self):
+        pass
     #
     #
     #
     def var(self):
         #
-        #estado para ler a declarão de variavel
+        #estado para ler a declarão de variavel. COMPLETO
         #
         if(self.token[0] == 'var'):
             self.buffer.append(self.token[0])
@@ -212,6 +227,9 @@ class a_sintatico():
     #
     def err(self,l,f):
         print('erro> ',l,' não encontrado. Encontrado: "',f,'"')
+
+    def err2(self,token):
+        print('"',token[0],'" não esperado na linha',token[2])
 
 #
 # FIM DA CLASSE DO ANALISADOR SINTATICO

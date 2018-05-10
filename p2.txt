@@ -2,4 +2,4 @@ program ex1;
 var
 a, b, c : integer;
 begin
-	a := b;
+	a := 4;
