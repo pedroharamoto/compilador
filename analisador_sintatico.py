@@ -126,6 +126,8 @@ class a_sintatico():
             self.token = self.get_token()
 
             if(self.token[0] == ':='):
+                #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
+                #é uma expressão
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
                 self.exp()
@@ -144,6 +146,8 @@ class a_sintatico():
         #
         #estado para ler uma expressao
         #
+        if(self.token[0] == ';'):
+            self.err2(self.token)
         self.si_exp()
         #
         if(self.token[1] == 'SIMB_REL'):
@@ -151,12 +155,15 @@ class a_sintatico():
             self.buffer.append(self.token[0])
             self.token = self.get_token()
             self.si_exp()
+        #
         elif(self.token[0] == ';'):
             return
     #
     #
     #
     def si_exp(self):
+        #
+        #estado para reconhecer '+,-,or'
         #
         self.term()
         #
@@ -176,7 +183,9 @@ class a_sintatico():
     #
     #
     def term(self):
-
+        #
+        #estado para reconhecer '*,/,div,mod,and'
+        #
         self.factor()
 
         if(self.token[0] in ['*','/','div','mod','and']):
@@ -195,7 +204,9 @@ class a_sintatico():
     #
     #
     def factor(self):
-
+        #
+        #estado para reconhecer alguma variavel,numero ou string
+        #
         if(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
             self.buffer.append(self.token[0])
             self.token = self.get_token()
