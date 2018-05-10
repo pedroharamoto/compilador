@@ -60,13 +60,41 @@ class a_sintatico():
     #
     #
     def inicio(self):
-        #mostra os tokens
+
+        while(self.token != ['&','&','&'] and self.token):
+            self.progr()
+            print(self.pensamento,"\n")
+            self.bloco()
+            self.token = self.get_token()
+
+    #
+    #
+    #
+    def progr(self):
+        #progr ::= progr ID '(' {ID | ','}+ ')' ';' bloco '.'
+        if(self.token[0] == 'program'):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            #
+            if(self.token[1] == 'ID'):
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+                #
+                if(self.token[0] == ';'):
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+                    self.pensamento += (self.buffer,)
+                    return
+                else:
+                    print('erro> ";" não encontrado. Encontrado: "',self.token[0],'"')
+            else:
+                print('erro> "ID" não encontrado. Encontrado: "', self.token[0],'"')
+    #
+    #
+    #
+    def bloco(self):
+        #
         
-    #
-    #
-    #
-
-
 
 #
 # FIM DA CLASSE DO ANALISADOR SINTATICO
