@@ -1,6 +1,0 @@
-program ex1;
-var
-a, b, c : integer;
-begin
-	a := 4;
-	b := 8;
