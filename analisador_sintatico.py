@@ -21,10 +21,8 @@ class a_sintatico():
     #
     def __init__(self, tokens):
         #construtor
-        self.pos_linha = 0
-        self.pos_coluna = 0
-        self.buffer = []
-        self.pensamento = ()
+        self.buffer = [] #indica os comandos que farão parte um pensamento. ex: program, ex, ;
+        self.pensamento = () #indica um comando. Ex: program ex;
         self.tab_tokens = tokens
         self.token = self.get_token() #ja pega o primeiro token
     #
@@ -45,6 +43,7 @@ class a_sintatico():
     #
     #
     def show_saida(self):
+        #esta função mostra os comandos reconhecidos
         for (i,linha) in enumerate(self.pensamento):
             print(linha)
     #
@@ -108,18 +107,6 @@ class a_sintatico():
     #
     #
     #
-    def begin(self):
-        #
-        #estado para ler a partir do begin de um codigo, até o ultimo end
-        #
-        if(self.token[0] == 'begin'):
-            self.buffer.append(self.token[0])
-            self.pensamento += (self.buffer,)
-            self.buffer = []
-            self.token = self.get_token()
-    #
-    #
-    #
     def statm(self):
         #
         #estado para ler um statment
@@ -138,6 +125,9 @@ class a_sintatico():
                 self.statm()
         #
         elif(self.token[0] == 'begin'):
+            #
+            #a cada vez q um 'begin' é encontrado, é necessario encontrar um 'end'
+            #
             self.buffer.append(self.token[0])
             self.pensamento += (self.buffer,)
             self.buffer = []
@@ -150,17 +140,16 @@ class a_sintatico():
                 self.token = self.get_token()
                 #
                 while(self.token[0] != 'end' and self.token[0] != '&'):
+                    #procurando por um 'end' para o 'begin' encontrado
                     self.statm()
                     self.token = self.get_token()
+                #encontrou um 'end'
+                self.buffer.append(self.token[0])
+                self.pensamento += (self.buffer,)
+                self.buffer = []
                 #
-                self.statm()
-        #
-        elif(self.token[0] == 'end'):
-            self.buffer.append(self.token[0])
-            #
-            self.token = self.get_token()
-            self.statm()
-            #
+                self.token = self.get_token()
+                #
         #
         elif(self.token[0] == ';'):
             self.buffer.append(self.token[0])
@@ -194,15 +183,20 @@ class a_sintatico():
                 #aqui pode-se encontrar algum 'else', se encontrar:
                 #deve-se voltar ao statm()
                 #porém, se receber um ';', indica fim do if
+                #
                 if(self.token[0] == 'else'):
                     self.buffer.append(self.token[0])
                     self.pensamento += (self.buffer,)
                     self.buffer = []
+                    self.token = self.get_token()
+                    #
                     self.statm()
             else:
                 self.err2(self.token)
         #
         #
+        else:
+            self.err2(self.token)
     #
     #
     #
