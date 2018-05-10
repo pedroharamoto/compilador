@@ -121,7 +121,7 @@ class a_sintatico():
         #estado para ler um statment
         #
         if(self.token[1] == 'ID'):
-
+            #statment para o tipo atribuição (a:= b+c;)
             self.buffer.append(self.token[0])
             self.token = self.get_token()
 
@@ -138,6 +138,15 @@ class a_sintatico():
                     self.buffer = []
                 else:
                     self.err2(self.token)
+        #
+        elif(self.token[0] == 'if'):
+            #estado para reconhecer um if -> exp -> then -> statment -> else ->...  -> vazio
+            print('leu um IF, na linha ',self.token[2])
+            #
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.exp()
+            print(self.token)
         #
     #
     #
@@ -211,7 +220,15 @@ class a_sintatico():
         #
         #estado para reconhecer alguma variavel,numero ou string
         #
-        if(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
+        if(self.token[0] == '('):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.exp()
+            if(self.token[0] == ')'):
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+                return
+        elif(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
             self.buffer.append(self.token[0])
             self.token = self.get_token()
             return
