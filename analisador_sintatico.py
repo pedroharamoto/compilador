@@ -134,6 +134,8 @@ class a_sintatico():
                     self.buffer.append(self.token[0])
                     self.pensamento += (self.buffer,)
                     self.buffer = []
+                else:
+                    self.err2(self.token)
         #
     #
     #
