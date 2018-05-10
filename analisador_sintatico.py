@@ -62,8 +62,8 @@ class a_sintatico():
         while(self.token != ['&','&','&'] and self.token):
             self.progr()
             self.bloco()
-
             self.token = self.get_token()
+        #
         self.show_saida()
     #
     #
@@ -99,6 +99,8 @@ class a_sintatico():
         self.var()
         #
         self.begin()
+        #
+        self.statm()
     #
     #
     #
@@ -111,8 +113,6 @@ class a_sintatico():
             self.pensamento += (self.buffer,)
             self.buffer = []
             self.token = self.get_token()
-
-            self.statm()
     #
     #
     #
@@ -129,13 +129,12 @@ class a_sintatico():
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
                 self.exp()
-                self.statm()
+
+                if(self.token[0] == ';'):
+                    self.buffer.append(self.token[0])
+                    self.pensamento += (self.buffer,)
+                    self.buffer = []
         #
-        elif(self.token[0] == ';'):
-            self.buffer.append(self.token[0])
-            self.pensamento += (self.buffer,)
-            self.buffer = []
-            return
     #
     #
     #
@@ -143,35 +142,55 @@ class a_sintatico():
         #
         #estado para ler uma expressao
         #
-        if(self.token[0] == '('):
+        self.si_exp()
+        #
+        if(self.token[1] == 'SIMB_REL'):
+            print(self.token[1])
             self.buffer.append(self.token[0])
             self.token = self.get_token()
-            self.exp();
-        #
-        elif(self.token[1] in ['NUM_INT','NUM_FLOAT','STRING1','STRING2','ID']):
-            self.buffer.append(self.token[0])
-            self.token = self.get_token()
-            self.termo()
-        #
-        elif(self.token[1] in ['SIMB_REL','SIMB_ARIT']):
-            self.buffer.append(self.token[0])
-            self.token = self.get_token()
-            self.exp()
-        #
-        elif(self.token[0] == ')'):
-            self.buffer.append(self.token[0])
-            self.token = self.get_token()
-            self.exp();
-        #
+            self.si_exp()
         elif(self.token[0] == ';'):
             return
-        else:
-            self.err2(self.token)
     #
     #
     #
-    def termo(self):
-        pass
+    def si_exp(self):
+        #
+        self.term()
+        #
+        if(self.token[0] in ['+','-','or']):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.term()
+            self.si_exp()
+        elif(self.token[0] == ';'):
+            return
+    #
+    #
+    #
+    def term(self):
+
+        self.factor()
+
+        if(self.token[0] in ['*','/','div','mod','and']):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.factor()
+            self.term()
+        elif(self.token[0] == ';'):
+            return
+    #
+    #
+    #
+    def factor(self):
+
+        if(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            return
+        elif(self.token[0] == ';'):
+            self.err('operador',self.token[0])
+    #
     #
     #
     def var(self):
@@ -213,6 +232,7 @@ class a_sintatico():
                             self.buffer.append(self.token[0])
                             self.pensamento += (self.buffer,)
                             self.buffer = []
+                            self.token = self.get_token()
                         else:
                             self.err(";",self.token[0])
                     else:
