@@ -449,6 +449,11 @@ class afd_lexico():
                 self.buffer += chr
                 self.pos_chr += 1
                 isSymbol = 7
+
+                if(self.buffer == '=='):
+                    isSymbol = 8
+                    break
+
                 break #### voltar
             elif(str.isalnum(chr) or chr == ' '):
                 isSymbol = 7
