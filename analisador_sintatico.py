@@ -98,8 +98,6 @@ class a_sintatico():
         #
         self.var()
         #
-        self.begin()
-        #
         self.statm()
     #
     #
@@ -131,22 +129,43 @@ class a_sintatico():
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
                 self.exp()
-
-                if(self.token[0] == ';'):
-                    self.buffer.append(self.token[0])
-                    self.pensamento += (self.buffer,)
-                    self.buffer = []
-                else:
-                    self.err2(self.token)
+                self.statm()
+        #
+        elif(self.token[0] == 'begin'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+            #
+            self.token = self.get_token()
+            self.statm()
+        #
+        elif(self.token[0] == ';'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
         #
         elif(self.token[0] == 'if'):
             #estado para reconhecer um if -> exp -> then -> statment -> else ->...  -> vazio
-            print('leu um IF, na linha ',self.token[2])
             #
             self.buffer.append(self.token[0])
             self.token = self.get_token()
+            #
             self.exp()
-            print(self.token)
+            #
+            #neste ponto deve-se encontrar um 'then', senão é um erro sintatico
+            #
+            if(self.token[0] == 'then'):
+                self.buffer.append(self.token[0])
+                self.pensamento += (self.buffer,)
+                self.buffer = []
+                #
+                self.token = self.get_token()
+                #
+                self.statm()
+                #
+                #pode-se encontrar algum 'else', se encontrar:
+                #deve-se voltar ao statm()
+                #
         #
     #
     #
@@ -162,7 +181,6 @@ class a_sintatico():
         self.si_exp()
         #
         if(self.token[1] == 'SIMB_REL'):
-            print(self.token[1])
             self.buffer.append(self.token[0])
             self.token = self.get_token()
             self.si_exp()
