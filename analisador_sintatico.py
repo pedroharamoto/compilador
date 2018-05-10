@@ -147,7 +147,9 @@ class a_sintatico():
         #estado para ler uma expressao
         #
         if(self.token[0] == ';'):
+            #erro do tipo a := ;
             self.err2(self.token)
+        #
         self.si_exp()
         #
         if(self.token[1] == 'SIMB_REL'):
@@ -172,6 +174,7 @@ class a_sintatico():
             self.token = self.get_token()
 
             if((self.token[0] in ['+','-','or']) or (self.token[0] in ['*','/','div','mod','and'])):
+                #erro do tipo a := a-++b;
                 self.err2(self.token)
 
             self.term()
@@ -193,6 +196,7 @@ class a_sintatico():
             self.token = self.get_token()
 
             if((self.token[0] in ['+','-','or']) or (self.token[0] in ['*','/','div','mod','and'])):
+                #erro do tipo a := **mod a;
                 self.err2(self.token)
 
             self.factor()
