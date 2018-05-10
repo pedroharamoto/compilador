@@ -163,8 +163,13 @@ class a_sintatico():
         if(self.token[0] in ['+','-','or']):
             self.buffer.append(self.token[0])
             self.token = self.get_token()
+
+            if((self.token[0] in ['+','-','or']) or (self.token[0] in ['*','/','div','mod','and'])):
+                self.err2(self.token)
+
             self.term()
             self.si_exp()
+        #
         elif(self.token[0] == ';'):
             return
     #
@@ -177,8 +182,13 @@ class a_sintatico():
         if(self.token[0] in ['*','/','div','mod','and']):
             self.buffer.append(self.token[0])
             self.token = self.get_token()
+
+            if((self.token[0] in ['+','-','or']) or (self.token[0] in ['*','/','div','mod','and'])):
+                self.err2(self.token)
+
             self.factor()
             self.term()
+        #
         elif(self.token[0] == ';'):
             return
     #
@@ -191,7 +201,7 @@ class a_sintatico():
             self.token = self.get_token()
             return
         elif(self.token[0] == ';'):
-            self.err('operador',self.token[0])
+            return
     #
     #
     #
@@ -218,9 +228,9 @@ class a_sintatico():
                             self.buffer.append(self.token[0])
                             self.token = self.get_token()
                         else:
-                            self.err(";",self.token[0])
+                            self.err2(self.token)
                     else:
-                        self.err(";",self.token[0])
+                        self.err2(self.token)
 
                 if(self.token[0] == ':'):
                     self.buffer.append(self.token[0])
@@ -236,13 +246,13 @@ class a_sintatico():
                             self.buffer = []
                             self.token = self.get_token()
                         else:
-                            self.err(";",self.token[0])
+                            self.err2(self.token)
                     else:
-                        self.err(";",self.token[0])
+                        self.err2(self.token)
                 else:
-                    self.err(";",self.token[0])
+                    self.err2(self.token)
             else:
-                self.err(";",self.token[0])
+                self.err2(self.token)
     #
     #
     #
@@ -250,7 +260,7 @@ class a_sintatico():
         print('erro> ',l,' não encontrado. Encontrado: "',f,'"')
 
     def err2(self,token):
-        print('"',token[0],'" não esperado na linha',token[2])
+        print('ERRO:::: "',token[0],'" não esperado na linha',token[2])
 
 #
 # FIM DA CLASSE DO ANALISADOR SINTATICO
