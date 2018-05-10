@@ -63,8 +63,11 @@ class a_sintatico():
 
         while(self.token != ['&','&','&'] and self.token):
             self.progr()
-            print(self.pensamento,"\n")
             self.bloco()
+
+
+
+            print(self.pensamento,"\n")
             self.token = self.get_token()
 
     #
@@ -84,17 +87,73 @@ class a_sintatico():
                     self.buffer.append(self.token[0])
                     self.token = self.get_token()
                     self.pensamento += (self.buffer,)
+                    self.buffer = []
                     return
                 else:
-                    print('erro> ";" não encontrado. Encontrado: "',self.token[0],'"')
+                    self.err(";",self.token[0])
             else:
-                print('erro> "ID" não encontrado. Encontrado: "', self.token[0],'"')
+                self.err(";",self.token[0])
     #
     #
     #
     def bloco(self):
         #
-        
+        self.var()
+    #
+    #
+    #
+    def var(self):
+        #
+        #estado para ler a declarão de variavel
+        #
+        if(self.token[0] == 'var'):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+
+            if(self.token[1] == 'ID'):
+
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+
+                while(self.token[0] != ':'):
+
+                    if(self.token[0] == ','):
+                        self.buffer.append(self.token[0])
+                        self.token = self.get_token()
+
+                        if(self.token[1] == 'ID'):
+                            self.buffer.append(self.token[0])
+                            self.token = self.get_token()
+                        else:
+                            self.err()
+                    else:
+                        self.err()
+
+                if(self.token[0] == ':'):
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+
+                    if(self.token[0] == 'integer'):
+                        self.buffer.append(self.token[0])
+                        self.token = self.get_token()
+
+                        if(self.token[0] == ';'):
+                            self.buffer.append(self.token[0])
+                            self.pensamento += (self.buffer,)
+                            self.buffer = []
+                        else:
+                            self.err(";",self.token[0])
+                    else:
+                        self.err(";",self.token[0])
+                else:
+                    self.err(";",self.token[0])
+            else:
+                self.err(";",self.token[0])
+    #
+    #
+    #
+    def err(self,l,f):
+        print('erro> ',l,' não encontrado. Encontrado: "',f,'"')
 
 #
 # FIM DA CLASSE DO ANALISADOR SINTATICO
