@@ -174,7 +174,6 @@ class a_sintatico():
         pass
     #
     #
-    #
     def var(self):
         #
         #estado para ler a declarão de variavel. COMPLETO
