@@ -142,16 +142,7 @@ class a_sintatico():
                 #
                 self.statm()
                 #
-                if(self.token[0] == ';'):
-                    self.buffer.append(self.token[0])
-                    self.pensamento += (self.buffer,)
-                    self.buffer = []
-                    self.token = self.get_token()
-                #
-                else:
-                    #erro: não encontrou um ';'
-                    self.err2(self.token)
-                    break;
+                #self.token = self.get_token()
             #
             #saiu do while, logo self.token guarda um 'end', o que é um estado para 'begin'
             #
@@ -200,25 +191,23 @@ class a_sintatico():
                 #
                 self.statm()
                 #
+                if(self.token[0] == 'else'):
+                    #
+                    print('else:',self.buffer)
+                    self.buffer.append(self.token[0])
+                    self.pensamento += (self.buffer,)
+                    self.buffer = []
+                    #
+                    self.token = self.get_token()
+                    #
+                    self.statm()
+                #                #
             else:
                 #se nao achou um 'then' >> ERRO
                 self.err2(self.token)
             #
             #
             #
-        #
-        elif(self.token[0] == 'else'):
-            #
-            self.buffer.append(self.token[0])
-            self.pensamento += (self.buffer,)
-            self.buffer = []
-            #
-            self.token = self.get_token()
-            self.statm()
-            #
-            self.statm()
-            #
-
         #
         elif(self.token[0] == 'begin'):
             #
@@ -231,14 +220,10 @@ class a_sintatico():
             while(self.token[0] != 'end' and self.token != ['&','&','&']):
                 self.statm()
                 #
-                if(self.token[0] == ';'):
-                    self.buffer.append(self.token[0])
-                    self.pensamento += (self.buffer,)
-                    self.buffer = []
-                    self.token = self.get_token()
-                #
             #encontrou aqui um 'end'
-            if(self.token == ['&','&','&']):
+            if(self.token[0] == 'end'):
+                pass
+            elif(self.token == ['&','&','&']):
                 self.err2(self.token)
         #
     #
@@ -256,6 +241,10 @@ class a_sintatico():
             self.si_exp()
         #
         elif(self.token[0] == ';'):
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+            self.token = self.get_token()
             return
     #
     #
