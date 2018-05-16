@@ -118,58 +118,23 @@ class a_sintatico():
         #
         if(self.token[0] == 'var'):
             #
-            #caso para declaração de variavel
-            #
             self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+            #
             self.token = self.get_token()
-
-            if(self.token[1] == 'ID'):
-
-                self.buffer.append(self.token[0])
-                self.token = self.get_token()
-
-                while(self.token[0] != ':'):
-
-                    if(self.token[0] == ','):
-                        self.buffer.append(self.token[0])
-                        self.token = self.get_token()
-
-                        if(self.token[1] == 'ID'):
-                            self.buffer.append(self.token[0])
-                            self.token = self.get_token()
-                        else:
-                            self.err2(self.token)
-                    else:
-                        self.err2(self.token)
-
-                if(self.token[0] == ':'):
-                    self.buffer.append(self.token[0])
-                    self.token = self.get_token()
-
-                    if(self.token[0] == 'integer'):
-                        self.buffer.append(self.token[0])
-                        self.token = self.get_token()
-
-                        if(self.token[0] == ';'):
-                            self.buffer.append(self.token[0])
-                            self.pensamento += (self.buffer,)
-                            self.buffer = []
-                            self.token = self.get_token()
-                        else:
-                            self.err2(self.token)
-                    else:
-                        self.err2(self.token)
-                else:
-                    self.err2(self.token)
-            else:
-                self.err2(self.token)
+            #
+            self.var() #aqui vou pegar TODAS as variaveis possiveis
+            #
+            self.bloco()
+            #
         ##
         ##fim da declaração de variavel
         ##
-        if(self.token[0] == 'begin'):
-        ##
-        ## se encontrar um begin, no inicio do programa.
-        ##
+        elif(self.token[0] == 'begin'):
+            ##
+            ## se encontrar um begin, no inicio do programa.
+            ##
             while(self.token[0] != 'end'):
                 #
                 self.statm()
@@ -193,6 +158,8 @@ class a_sintatico():
     def statm(self):
         #
         #estado para ler um statment
+        #
+        #print('oi',self.token)
         #
         if(self.token[1] == 'ID'):
             #statment para o tipo atribuição (a:= b+c;)
@@ -315,50 +282,53 @@ class a_sintatico():
         #
         #estado para ler a declarão de variavel. COMPLETO
         #
-        if(self.token[0] == 'var'):
+        if(self.token[1] == 'ID'):
+            #
             self.buffer.append(self.token[0])
             self.token = self.get_token()
-
-            if(self.token[1] == 'ID'):
-
+            #
+            while(self.token[0] == ','):
+                #
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
-
-                while(self.token[0] != ':'):
-
-                    if(self.token[0] == ','):
-                        self.buffer.append(self.token[0])
-                        self.token = self.get_token()
-
-                        if(self.token[1] == 'ID'):
-                            self.buffer.append(self.token[0])
-                            self.token = self.get_token()
-                        else:
-                            self.err2(self.token)
-                    else:
-                        self.err2(self.token)
-
-                if(self.token[0] == ':'):
+                #
+                if(self.token[1] == 'ID'):
+                    #
                     self.buffer.append(self.token[0])
                     self.token = self.get_token()
-
-                    if(self.token[0] == 'integer'):
+                    #
+                else:
+                    #erro, não encontrou nenhum id
+                    self.err2(self.token)
+            #fim while
+            if(self.token[0] == ':'):
+                #
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+                #
+                if(self.token[0] == 'integer'):
+                    #por enquanto só reconhecerá variaveis do tipo 'integer'
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+                    #
+                    if(self.token[0] == ';'):
+                        #
                         self.buffer.append(self.token[0])
+                        self.pensamento += (self.buffer,)
+                        self.buffer = []
+                        #
                         self.token = self.get_token()
-
-                        if(self.token[0] == ';'):
-                            self.buffer.append(self.token[0])
-                            self.pensamento += (self.buffer,)
-                            self.buffer = []
-                            self.token = self.get_token()
-                        else:
-                            self.err2(self.token)
+                        #
+                        if(self.token[1] == 'ID'):
+                            #se encontrar outro id, deve-se voltar a esse estado para os mesmos passos.
+                            self.var()
+                    #endif
                     else:
+                        #era esperado um ';'
                         self.err2(self.token)
                 else:
-                    self.err2(self.token)
-            else:
-                self.err2(self.token)
+                    #era pra encontrar algum type de variavel
+                    pass
     #
     #
     #
