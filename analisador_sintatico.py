@@ -182,6 +182,44 @@ class a_sintatico():
                 self.token = self.get_token()
                 self.exp()
         #
+        if(self.token[0] == 'if'):
+            #
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            #
+            self.exp()
+            #
+            if(self.token[0] == 'then'):
+                #se ler um 'then', add a buffer esse token, add ao pensamento, limpa o buffer e pega o proximo token
+                self.buffer.append(self.token[0])
+                self.pensamento += (self.buffer,)
+                self.buffer = []
+                self.token = self.get_token()
+                #
+                #supostamente, agora começam os comandos para o if, logo, deve-se chamar um statm()
+                #
+                self.statm()
+                #
+            else:
+                #se nao achou um 'then' >> ERRO
+                self.err2(self.token)
+            #
+            #
+            #
+        #
+        elif(self.token[0] == 'else'):
+            #
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+            #
+            self.token = self.get_token()
+            self.statm()
+            #
+            self.statm()
+            #
+
+        #
         elif(self.token[0] == 'begin'):
             #
             self.buffer.append(self.token[0])
