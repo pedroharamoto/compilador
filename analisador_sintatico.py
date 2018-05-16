@@ -135,6 +135,9 @@ class a_sintatico():
             ##
             ## se encontrar um begin, no inicio do programa.
             ##
+            self.pensamento += ([self.token[0]],)
+            self.token = self.get_token()
+            #
             while(self.token[0] != 'end'):
                 #
                 self.statm()
@@ -144,15 +147,21 @@ class a_sintatico():
                     self.pensamento += (self.buffer,)
                     self.buffer = []
                     self.token = self.get_token()
-        #
-        #saiu do while, logo self.token guarda um 'end', o que é um estado para 'begin'
-        #
-        self.buffer.append(self.token[0])
-        self.pensamento += (self.buffer,)
-        self.buffer = []
-        ##
-        ##fim do begin
-        ##
+                #
+                else:
+                    #erro: não encontrou um ';'
+                    self.err2(self.token)
+                    break;
+            #
+            #saiu do while, logo self.token guarda um 'end', o que é um estado para 'begin'
+            #
+            self.buffer.append(self.token[0])
+            self.pensamento += (self.buffer,)
+            self.buffer = []
+            ##
+            ##fim do begin
+            ##
+    #
     #
     #
     def statm(self):
