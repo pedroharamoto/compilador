@@ -58,10 +58,9 @@ class a_sintatico():
     #
     def inicio(self):
 
-        #while(self.token != ['&','&','&'] and self.token):
         self.progr()
-        self.bloco()
-        #self.token = self.get_token()
+        #self.bloco()
+        #
         #
         self.show_saida()
     #
@@ -85,42 +84,110 @@ class a_sintatico():
                     self.token = self.get_token()
                     self.pensamento += (self.buffer,)
                     self.buffer = []
-                    return
+                    #
+                    # fim do 'program xxx;'. Portanto, chama-se bloco()
+                    #
+                    self.bloco()
+                    #
+                    self.token = self.get_token()
+                    #
+                    #pego o proximo token, se for um '.'
+                    #então, é o fim do programa
+                    #
+                    if(self.token[0] == '.'):
+                        self.buffer.append(self.token[0])
+                        self.pensamento += (self.buffer,)
+                        self.buffer = []
+                    else:
+                        #se não achou um '.'
+                        self.err2(self.token)
                 else:
-                    self.err(";",self.token[0])
+                    #se não achou um ';'
+                    self.err2(self.token)
             #
             else:
-                self.err(";",self.token[0])
+                #se não achou um ID
+                self.err(self.token)
         #
-        elif(self.token[0] == '.'):
-            self.buffer.append(self.token[0])
-            self.pensamento += (self.buffer,)
-            self.buffer = []
     #
     #
     #
     def bloco(self):
         #
-        self.var()
+        #estado para ler os BLOCKS.
         #
-        self.begin()
-        #
-    #
-    #
-    #
-    def begin(self):
-        #
-        while(self.token[0] != 'end'):
+        if(self.token[0] == 'var'):
             #
-            self.statm()
+            #caso para declaração de variavel
             #
-            if(self.token[0] == ';'):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+
+            if(self.token[1] == 'ID'):
+
                 self.buffer.append(self.token[0])
-                self.pensamento += (self.buffer,)
-                self.buffer = []
                 self.token = self.get_token()
-            #
-    #
+
+                while(self.token[0] != ':'):
+
+                    if(self.token[0] == ','):
+                        self.buffer.append(self.token[0])
+                        self.token = self.get_token()
+
+                        if(self.token[1] == 'ID'):
+                            self.buffer.append(self.token[0])
+                            self.token = self.get_token()
+                        else:
+                            self.err2(self.token)
+                    else:
+                        self.err2(self.token)
+
+                if(self.token[0] == ':'):
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+
+                    if(self.token[0] == 'integer'):
+                        self.buffer.append(self.token[0])
+                        self.token = self.get_token()
+
+                        if(self.token[0] == ';'):
+                            self.buffer.append(self.token[0])
+                            self.pensamento += (self.buffer,)
+                            self.buffer = []
+                            self.token = self.get_token()
+                        else:
+                            self.err2(self.token)
+                    else:
+                        self.err2(self.token)
+                else:
+                    self.err2(self.token)
+            else:
+                self.err2(self.token)
+        ##
+        ##fim da declaração de variavel
+        ##
+        if(self.token[0] == 'begin'):
+        ##
+        ## se encontrar um begin, no inicio do programa.
+        ##
+            while(self.token[0] != 'end'):
+                #
+                self.statm()
+                #
+                if(self.token[0] == ';'):
+                    self.buffer.append(self.token[0])
+                    self.pensamento += (self.buffer,)
+                    self.buffer = []
+                    self.token = self.get_token()
+        #
+        #saiu do while, logo self.token guarda um 'end', o que é um estado para 'begin'
+        #
+        self.buffer.append(self.token[0])
+        self.pensamento += (self.buffer,)
+        self.buffer = []
+        ##
+        ##fim do begin
+        ##
     #
     #
     def statm(self):
@@ -156,7 +223,10 @@ class a_sintatico():
                     self.buffer = []
                     self.token = self.get_token()
                 #
-            print(self.token)
+            #encontrou aqui um 'end'
+            if(self.token == ['&','&','&']):
+                self.err2(self.token)
+        #
     #
     #
     #
