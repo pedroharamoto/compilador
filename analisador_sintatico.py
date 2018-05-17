@@ -242,7 +242,15 @@ class a_sintatico():
                     #
                     if(self.token[0] == 'else'):
                         self.err2(self.token)
-
+                #
+                elif(self.token[0] != 'else'):
+                    #
+                    #se nao encontrou um ';' e nem um 'else', pode ser algo do tipo:
+                    #else begin
+                    # x := 454654;
+                    #end
+                    #
+                    self.err2(self.token)
                 #
                 self.pensamento += (self.buffer,)
                 self.buffer = []
@@ -398,6 +406,7 @@ class a_sintatico():
     def err(self,l,f):
         print('erro> ',l,' não encontrado. Encontrado: "',f,'"')
         exit(0)
+    #
     def err2(self,token):
         print('ERRO:::: "',token[0],'" não esperado na linha',token[2])
         exit(0)
