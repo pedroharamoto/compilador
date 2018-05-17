@@ -174,6 +174,24 @@ class a_sintatico():
                 self.exp()
         #
         #
+        elif(self.token[0] == 'while'):
+            #while -> EXP -> do -> STATM
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            #
+            self.exp()
+            #
+            if(self.token[0] == 'do'):
+                #
+                self.buffer.append(self.token[0])
+                self.pensamento += (self.buffer,)
+                self.buffer = []
+                #
+                self.token = self.get_token()
+                #
+                self.statm()
+                #
+        #
         elif(self.token[0] == 'if'):
             #
             self.buffer.append(self.token[0])
