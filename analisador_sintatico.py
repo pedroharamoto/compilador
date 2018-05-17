@@ -174,6 +174,55 @@ class a_sintatico():
                 self.exp()
         #
         #
+        elif(self.token[0] == 'for'):
+            #for -> id -> := -> exp -> to | downto -> exp -> do -> statm
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            #
+            if(self.token[1] == 'ID'):
+                #
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+                #
+                if(self.token[0] == ':='):
+                    #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
+                    #é uma expressão
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+                    self.exp()
+                    #
+                    if(self.token[0] == 'to' or self.token[0] == 'downto'):
+                        #
+                        self.buffer.append(self.token[0])
+                        self.token = self.get_token()
+                        #
+                        self.exp()
+                        #
+                        if(self.token[0] == 'do'):
+                            self.buffer.append(self.token[0])
+                            self.pensamento += (self.buffer,)
+                            self.buffer = []
+                            #
+                            self.token = self.get_token()
+                            #
+                            self.statm()
+                        #
+                        else:
+                            #nao encontrou um 'do'
+                            self.err2(self.token)
+                    #
+                    else:
+                        #nao encntrou um 'to' ou 'downto'
+                        self.err2(self.token)
+                #
+                else:
+                    #nao encontrou uma atribuição
+                    self.err2(self.token)
+            #
+            else:
+                #nao encontrou um ID para o for
+                self.err2(self.token)
+        #
         elif(self.token[0] == 'while'):
             #while -> EXP -> do -> STATM
             self.buffer.append(self.token[0])
