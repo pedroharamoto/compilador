@@ -191,7 +191,20 @@ class a_sintatico():
                 #
                 self.statm()
                 #
-                if(self.token[0] == 'else'):
+                #
+                if(self.token[0] == ';'):
+                    #se encontrar um ';' será um fim de pensamento, logo não poderá haver um 'else'
+                    self.buffer.append(self.token[0])
+                    self.pensamento += (self.buffer,)
+                    self.buffer = []
+                    #
+                    self.token = self.get_token()
+                #
+                elif(self.token[0] == 'else'):
+                    #
+                    if('end' in self.buffer):
+                        self.pensamento += (self.buffer,)
+                        self.buffer=[]
                     #
                     self.buffer.append(self.token[0])
                     self.pensamento += (self.buffer,)
@@ -200,6 +213,17 @@ class a_sintatico():
                     self.token = self.get_token()
                     #
                     self.statm()
+                    #
+                    if(self.token[0] == ';'):
+                        #se encontrar um ';' será um fim de pensamento, logo não poderá haver um 'else'
+                        self.buffer.append(self.token[0])
+                        self.pensamento += (self.buffer,)
+                        self.buffer = []
+                        #
+                        self.token = self.get_token()
+                    else:
+                        #aqui era esperado um ';', senao houver é um erro
+                        self.err2(self.token)
                 #
             else:
                 #se nao achou um 'then' >> ERRO
@@ -222,17 +246,13 @@ class a_sintatico():
             #encontrou aqui um 'end'
             #
             if(self.token[0] == 'end'):
+                #
+                #add 'end' ao buffer e pede o proximo token
+                #pois pode ser um if-else
+                #
                 self.buffer.append(self.token[0])
                 #
                 self.token = self.get_token()
-                #
-                if(self.token[0] == ';'):
-                    #se encontrar um ';' será um fim de pensamento, logo não poderá haver um 'else'
-                    self.buffer.append(self.token[0])
-                    self.token = self.get_token()
-                #
-                self.pensamento += (self.buffer,)
-                self.buffer = []
                 #
             elif(self.token == ['&','&','&']):
                 self.err2(self.token)
@@ -277,15 +297,13 @@ class a_sintatico():
             self.buffer.append(self.token[0])
             self.token = self.get_token()
 
-            if((self.token[0] in ['+','-','or']) or (self.token[0] in ['*','/','div','mod','and'])):
+            if((self.token[0] in ['+','-','or','*','/','div','mod','and'])):
                 #erro do tipo a := a-++b;
                 self.err2(self.token)
 
             self.term()
             self.si_exp()
         #
-        elif(self.token[0] == ';'):
-            return
     #
     #
     #
@@ -299,15 +317,13 @@ class a_sintatico():
             self.buffer.append(self.token[0])
             self.token = self.get_token()
 
-            if((self.token[0] in ['+','-','or']) or (self.token[0] in ['*','/','div','mod','and'])):
+            if((self.token[0] in ['+','-','or','*','/','div','mod','and'])):
                 #erro do tipo a := **mod a;
                 self.err2(self.token)
 
             self.factor()
             self.term()
         #
-        elif(self.token[0] == ';'):
-            return
     #
     #
     #
@@ -327,8 +343,7 @@ class a_sintatico():
             self.buffer.append(self.token[0])
             self.token = self.get_token()
             return
-        elif(self.token[0] == ';'):
-            return
+        #
     #
     #
     #
