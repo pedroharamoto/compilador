@@ -173,7 +173,7 @@ class a_sintatico():
                 self.token = self.get_token()
                 self.exp()
         #
-        if(self.token[0] == 'if'):
+        elif(self.token[0] == 'if'):
             #
             self.buffer.append(self.token[0])
             self.token = self.get_token()
@@ -193,7 +193,6 @@ class a_sintatico():
                 #
                 if(self.token[0] == 'else'):
                     #
-                    print('else:',self.buffer)
                     self.buffer.append(self.token[0])
                     self.pensamento += (self.buffer,)
                     self.buffer = []
@@ -201,7 +200,7 @@ class a_sintatico():
                     self.token = self.get_token()
                     #
                     self.statm()
-                #                #
+                #
             else:
                 #se nao achou um 'then' >> ERRO
                 self.err2(self.token)
@@ -217,15 +216,34 @@ class a_sintatico():
             #
             self.token = self.get_token()
             #
-            while(self.token[0] != 'end' and self.token != ['&','&','&']):
+            while(self.token[0] != 'end'):
                 self.statm()
-                #
+            #
             #encontrou aqui um 'end'
+            #
             if(self.token[0] == 'end'):
-                pass
+                self.buffer.append(self.token[0])
+                #
+                self.token = self.get_token()
+                #
+                if(self.token[0] == ';'):
+                    #se encontrar um ';' será um fim de pensamento, logo não poderá haver um 'else'
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+                #
+                self.pensamento += (self.buffer,)
+                self.buffer = []
+                #
             elif(self.token == ['&','&','&']):
                 self.err2(self.token)
+            #
+            else:
+                #se nao encontrar um 'end' é um ERRO
+                self.err2(self.token)
         #
+        else:
+            self.err2(self.token)
+            self.token = self.get_token()
     #
     #
     #
