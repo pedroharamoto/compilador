@@ -173,6 +173,7 @@ class a_sintatico():
                 self.token = self.get_token()
                 self.exp()
         #
+        #
         elif(self.token[0] == 'if'):
             #
             self.buffer.append(self.token[0])
@@ -191,20 +192,7 @@ class a_sintatico():
                 #
                 self.statm()
                 #
-                #
-                if(self.token[0] == ';'):
-                    #se encontrar um ';' será um fim de pensamento, logo não poderá haver um 'else'
-                    self.buffer.append(self.token[0])
-                    self.pensamento += (self.buffer,)
-                    self.buffer = []
-                    #
-                    self.token = self.get_token()
-                #
-                elif(self.token[0] == 'else'):
-                    #
-                    if('end' in self.buffer):
-                        self.pensamento += (self.buffer,)
-                        self.buffer=[]
+                if(self.token[0] == 'else'):
                     #
                     self.buffer.append(self.token[0])
                     self.pensamento += (self.buffer,)
@@ -214,16 +202,7 @@ class a_sintatico():
                     #
                     self.statm()
                     #
-                    if(self.token[0] == ';'):
-                        #se encontrar um ';' será um fim de pensamento, logo não poderá haver um 'else'
-                        self.buffer.append(self.token[0])
-                        self.pensamento += (self.buffer,)
-                        self.buffer = []
-                        #
-                        self.token = self.get_token()
-                    else:
-                        #aqui era esperado um ';', senao houver é um erro
-                        self.err2(self.token)
+                    #deve-se pedir o proximo token
                 #
             else:
                 #se nao achou um 'then' >> ERRO
@@ -251,9 +230,24 @@ class a_sintatico():
                 #pois pode ser um if-else
                 #
                 self.buffer.append(self.token[0])
-                #
                 self.token = self.get_token()
                 #
+                if(self.token[0] == ';'):
+                    #
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+                    #
+                    #se entrou aqui por causa de um if composto, e houver um 'else' nesse token
+                    #então será um erro, pois um 'end;' fechará o if, o que não permitirá um 'else'
+                    #
+                    if(self.token[0] == 'else'):
+                        self.err2(self.token)
+
+                #
+                self.pensamento += (self.buffer,)
+                self.buffer = []
+                #
+            #
             elif(self.token == ['&','&','&']):
                 self.err2(self.token)
             #
@@ -403,9 +397,10 @@ class a_sintatico():
     #
     def err(self,l,f):
         print('erro> ',l,' não encontrado. Encontrado: "',f,'"')
-
+        exit(0)
     def err2(self,token):
         print('ERRO:::: "',token[0],'" não esperado na linha',token[2])
+        exit(0)
 
 #
 # FIM DA CLASSE DO ANALISADOR SINTATICO
