@@ -112,6 +112,86 @@ class a_sintatico():
     #
     #
     #
+    def type(self):
+        #
+        #estado para reconhcer os tipos de variavel
+        #
+        if(self.token[0] in ['boolean','char','integer', 'real', 'string']):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+        #
+        elif(self.token[0] == 'array'):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            #
+            if(self.token[0] == '['):
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+                #
+                while(True):
+                    #
+                    self.sitype()
+                    #
+                    if(self.token[0] == ']'):
+                        self.token = self.get_token()
+                        break;
+                    #
+                    elif(self.token[0] == ','):
+                        self.token = self.get_token()
+                    #
+                    else:
+                        self.err2(self.token)
+                #
+                #
+                #
+                if(self.token[0] == 'of'):
+                    self.buffer.append(self.token[0])
+                    self.token = self.get_token()
+                    self.type()
+                    #
+                    if(self.token[0] == ';'):
+                        self.buffer.append(self.token[0])
+                        self.pensamento += (self.buffer,)
+                        self.buffer = []
+                        self.token = self.get_token()
+                    #
+                    else:
+                        self.err2(self.token)
+                else:
+                    self.err2(self.token)
+            #
+            else:
+                self.err2(self.token)
+        else:
+            self.err2(self.token)
+    #
+    #
+    #
+    def sitype(self):
+        #
+        self.const()
+        #
+        if(self.token[0] == '..'):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            self.const()
+        else:
+            self.err2(self.token)
+    #
+    #
+    #
+    def const(self):
+        #
+        if(self.token[1] in ['STRING1','STRING2','ID','NUM_INT','NUM_FLOAT']):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+        #
+        else:
+            self.err2(self.token)
+
+    #
+    #
+    #
     def bloco(self):
         #
         #estado para ler os BLOCKS.
@@ -504,29 +584,20 @@ class a_sintatico():
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
                 #
-                if(self.token[0] == 'integer'):
-                    #por enquanto só reconhecerá variaveis do tipo 'integer'
+                self.type()
+                #
+                if(self.token[0] == ';'):
+                    #
                     self.buffer.append(self.token[0])
+                    self.pensamento += (self.buffer,)
+                    self.buffer = []
+                    #
                     self.token = self.get_token()
                     #
-                    if(self.token[0] == ';'):
-                        #
-                        self.buffer.append(self.token[0])
-                        self.pensamento += (self.buffer,)
-                        self.buffer = []
-                        #
-                        self.token = self.get_token()
-                        #
-                        if(self.token[1] == 'ID'):
-                            #se encontrar outro id, deve-se voltar a esse estado para os mesmos passos.
-                            self.var()
+                    if(self.token[1] == 'ID'):
+                        #se encontrar outro id, deve-se voltar a esse estado para os mesmos passos.
+                        self.var()
                     #endif
-                    else:
-                        #era esperado um ';'
-                        self.err2(self.token)
-                else:
-                    #era pra encontrar algum type de variavel
-                    pass
     #
     #
     #
