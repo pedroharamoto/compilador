@@ -4,9 +4,11 @@ var
 a, b, c,i : integer;
 d:integer;
 begin
+
 	a := (4*(7+8))+88;
 	b := 9*a;
 	c := a;
+
 	if(a < b) then begin
 		while (a>0) do
 		begin
@@ -17,10 +19,24 @@ begin
 	else begin
 		b := a;
 	end;
+
 	a := 88;
+
 	for i:=(b-1) to (10+a) do
 	begin
 		a := a +1;
 		b := b - 1;
 	end;
+
+	case x of
+		1 : a:=b;
+
+		2: begin
+			a:=44;
+			b:=57;
+			end;
+
+		"oi" : a:=48;
+	end;
+
 end.
