@@ -26,11 +26,11 @@ class afd_lexico():
         #
         #
         #variavel para a tabela de palavras reservadas
-        self.palavras_reservadas = ['and','array','asm','begin','case','const','constructor',
+        self.palavras_reservadas = ['and','array','asm','begin','boolean','case','char','const','constructor',
                                       'destructor','div','do','downto','else','end','file','for'
                                       ,'foward','function','goto','if','implementation','in','inline'
                                       ,'integer','interface','label','mod','nil','not','object','of','or','packed'
-                                      ,'procedure','program','read','record','repeat','set','shl','shr','string'
+                                      ,'procedure','program','read','real','record','repeat','set','shl','shr','string'
                                       ,'then','to','type','unit','until','uses','var','while','with','write','xor'
                                       ]
         #variavel para a tabela de simbolos de pontuacao
@@ -302,6 +302,12 @@ class afd_lexico():
                 break
 
             elif(chr == '.'):
+                #pode ser o operador '..'
+
+                if(self.codigo_fonte[self.pos_chr+1] == '.'):
+                    isnumber = True
+                    break
+
                 self.estado_4(chr) # POSSIVEL FLOAT
                 if (self.tipo_numero == 4):
                     isnumber = True
@@ -418,7 +424,7 @@ class afd_lexico():
         self.buffer += chr
         self.pos_chr += 1
         isSymbol = 6
-
+        #
         if(self.isPontSymbol(chr)):
             if(chr == ':'):
                 chr = self.codigo_fonte[self.pos_chr]
@@ -427,7 +433,16 @@ class afd_lexico():
                     self.buffer += chr
                     self.pos_chr += 1
                     return 11
-            isSymbol = 5
+            #
+            elif(chr == '.'):
+                #pode encontrar o operador '..'
+                chr = self.codigo_fonte[self.pos_chr]
+                if(chr == '.'):
+                    self.buffer += chr
+                    self.pos_chr += 1
+                    isSymbol = 5
+                return 5
+
         else:
             isSymbol = 6
 
