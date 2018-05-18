@@ -174,6 +174,66 @@ class a_sintatico():
                 self.exp()
         #
         #
+        elif(self.token[0] == 'case'):
+            #
+            #case -> exp -> of -> string | number | id -> , | : -> statm -> ; | end
+            #
+            self.buffer.append(self.token[0])
+            self.token = self.get_token()
+            #
+            self.exp()
+            #
+            if(self.token[0] == 'of'):
+                #
+                self.buffer.append(self.token[0])
+                self.pensamento += (self.buffer,)
+                self.buffer = []
+                self.token = self.get_token()
+                #
+                while(self.token[0] != 'end'):
+                    #
+                    if(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
+                        #
+                        self.buffer.append(self.token[0])
+                        self.token = self.get_token()
+                        #
+                        if(self.token[0] == ':'):
+                            #
+                            self.buffer.append(self.token[0])
+                            self.pensamento += (self.buffer,)
+                            self.buffer = []
+                            self.token = self.get_token()
+                            #
+                            self.statm()
+                        #
+                        else:
+                            #nao encontrou um ':'
+                            self.err2(self.token)
+                        #
+                    else:
+                        #nao encontrou um id, number ou STRING
+                        self.err2(self.token)
+                    #
+                #
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
+                #
+                if(self.token[0] == ';'):
+                    self.buffer.append(self.token[0])
+                    self.pensamento += (self.buffer,)
+                    self.buffer = []
+                    self.token = self.get_token()
+                #
+                else:
+                    #nao encontrou um ';' apos o end
+                    self.err2(self.token)
+            #
+            else:
+                #nao encontrou um 'of'
+                self.err2(self.token)
+        #
+        #
+        #
         elif(self.token[0] == 'for'):
             #for -> id -> := -> exp -> to | downto -> exp -> do -> statm
             self.buffer.append(self.token[0])
