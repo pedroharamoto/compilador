@@ -2,7 +2,9 @@
 program ex1;
 var
 a, b, c,i : integer;
-d:integer;
+a, b, c, i : integer;
+d : integer;
+e : array[1..4,1..4] of integer;
 begin
 
 	a := (4*(7+8))+88;
