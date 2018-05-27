@@ -328,8 +328,6 @@ class a_sintatico():
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
                 #
-                self.infipo();
-                #
                 if(self.token[0] == ':='):
                     #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
                     #é uma expressão
