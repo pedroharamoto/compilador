@@ -245,7 +245,11 @@ class a_sintatico():
             #statment para o tipo atribuição (a:= b+c;)
             self.buffer.append(self.token[0])
             self.token = self.get_token()
-
+            #
+            #pode encontrar algo do tipo a[xxx-14]
+            #
+            self.infipo();
+            #
             if(self.token[0] == ':='):
                 #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
                 #é uma expressão
@@ -323,6 +327,8 @@ class a_sintatico():
                 #
                 self.buffer.append(self.token[0])
                 self.token = self.get_token()
+                #
+                self.infipo();
                 #
                 if(self.token[0] == ':='):
                     #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
@@ -473,6 +479,27 @@ class a_sintatico():
         else:
             self.err2(self.token)
             self.token = self.get_token()
+    #
+    #
+    #
+    def infipo(self):
+        #le vetores e etc
+        if(self.token[0] == '['):
+            self.buffer.append(self.token[0])
+            self.token = self.get_token();
+            #
+            self.exp();
+            #
+            while(self.token[0] == ','):
+                #guardo no buffer e pego o proximo token
+                self.buffer.append(self.token[0]);
+                self.token = self.get_token();
+                #
+                self.exp();
+            #
+            if(self.token[0] == ']'):
+                self.buffer.append(self.token[0])
+                self.token = self.get_token()
     #
     #
     #
