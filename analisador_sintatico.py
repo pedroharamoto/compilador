@@ -107,8 +107,10 @@ class a_sintatico():
             #
             else:
                 #se não achou um ID
-                self.err(self.token)
-        #
+                self.err2(self.token)
+        else:
+            #não achou um program
+            self.err2(self.token)
     #
     #
     #
