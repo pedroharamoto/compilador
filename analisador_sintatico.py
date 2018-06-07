@@ -72,15 +72,15 @@ class a_sintatico():
         #progr ::= progr ID '(' {ID | ','}+ ')' ';' bloco '.'
         #
         if(self.token[0] == 'program'):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             if(self.token[1] == 'ID'):
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 #
                 if(self.token[0] == ';'):
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.token = self.get_token()
                     self.pensamento += (self.buffer,)
                     self.buffer = []
