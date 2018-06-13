@@ -223,7 +223,9 @@ class a_sintatico():
             ##
             ## se encontrar um begin, no inicio do programa.
             ##
-            self.pensamento += ([self.token[0]],)
+            self.buffer.append(self.token)
+            self.pensamento += (self.buffer,)
+            self.buffer = []
             self.token = self.get_token()
             #
             while(self.token[0] != 'end'):
