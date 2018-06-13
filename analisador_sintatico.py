@@ -45,7 +45,8 @@ class a_sintatico():
     def show_saida(self):
         #esta função mostra os comandos reconhecidos
         for (i,linha) in enumerate(self.pensamento):
-            print(linha)
+            for(j,coluna) in enumerate(linha):
+                print(coluna)
     #
     #
     #
@@ -515,7 +516,12 @@ class a_sintatico():
         if(self.token[1] == 'SIMB_REL'):
             self.buffer.append(self.token)
             self.token = self.get_token()
-            self.si_exp()
+
+            if(not (self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2'])):
+                self.err2(self.token)
+
+            self.exp()
+
         #
         elif(self.token[0] == ';'):
             self.buffer.append(self.token)
@@ -523,7 +529,7 @@ class a_sintatico():
             self.buffer = []
             self.token = self.get_token()
             return
-    #
+        #
     #
     #
     def si_exp(self):
