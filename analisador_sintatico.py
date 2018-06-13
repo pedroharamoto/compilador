@@ -42,11 +42,16 @@ class a_sintatico():
     #
     #
     #
+    def create_arv_sintatica(self):
+        return self.pensamento
+    #
+    #
+    #
     def show_saida(self):
         #esta função mostra os comandos reconhecidos
         for (i,linha) in enumerate(self.pensamento):
             for(j,coluna) in enumerate(linha):
-                print(coluna)
+               print(coluna)
     #
     #
     #
@@ -58,12 +63,7 @@ class a_sintatico():
     #
     #
     def inicio(self):
-
         self.progr()
-        #self.bloco()
-        #
-        #
-        self.show_saida()
     #
     #
     #
@@ -139,10 +139,12 @@ class a_sintatico():
                     self.sitype()
                     #
                     if(self.token[0] == ']'):
+                        self.buffer.append(self.token)
                         self.token = self.get_token()
                         break;
                     #
                     elif(self.token[0] == ','):
+                        self.buffer.append(self.token)
                         self.token = self.get_token()
                     #
                     else:
@@ -649,8 +651,8 @@ class a_sintatico():
 # FIM DA CLASSE DO ANALISADOR SINTATICO
 #
 
-sintatico = a_sintatico(tokens)
+#sintatico = a_sintatico(tokens)
 
-sintatico.inicio()
+#sintatico.inicio()
 #sintatico.show_saida()
 #sintatico.show_tokens()
