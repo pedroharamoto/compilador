@@ -233,7 +233,7 @@ class afd_lexico():
     #
     #
     def veri_reservada(self):
-        return (self.busca_binaria(self.buffer,self.palavras_reservadas) and ( (self.codigo_fonte[self.pos_chr] == '(') or(self.codigo_fonte[self.pos_chr] == '\0') or (self.codigo_fonte[self.pos_chr] == ' ' or (self.codigo_fonte[self.pos_chr] == '\n') or (self.codigo_fonte[self.pos_chr] == '.') or (self.codigo_fonte[self.pos_chr] == ';'))))
+        return (self.busca_binaria(self.buffer,self.palavras_reservadas) and ( (self.codigo_fonte[self.pos_chr] == '[') or (self.codigo_fonte[self.pos_chr] == '(') or(self.codigo_fonte[self.pos_chr] == '\0') or (self.codigo_fonte[self.pos_chr] == ' ' or (self.codigo_fonte[self.pos_chr] == '\n') or (self.codigo_fonte[self.pos_chr] == '.') or (self.codigo_fonte[self.pos_chr] == ';'))))
     #
     #
     #
@@ -581,10 +581,10 @@ class afd_lexico():
 # FIM DA CLASSE
 #
 
-#tokens = afd_lexico().create_table_token()
+tokens = afd_lexico().create_table_token()
 
-#for (i,token) in enumerate(tokens):
-#    print(token)
+for (i,token) in enumerate(tokens):
+    print(token)
 #
 #
 #o codigo comentado abaixo é apenas um exemplo de leitura dos tokens
