@@ -581,10 +581,10 @@ class afd_lexico():
 # FIM DA CLASSE
 #
 
-tokens = afd_lexico().create_table_token()
+#tokens = afd_lexico().create_table_token()
 
-for (i,token) in enumerate(tokens):
-    print(token)
+#for (i,token) in enumerate(tokens):
+#    print(token)
 #
 #
 #o codigo comentado abaixo é apenas um exemplo de leitura dos tokens
