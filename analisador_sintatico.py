@@ -89,13 +89,16 @@ class a_sintatico():
                     #
                     self.bloco()
                     #
+                    if(self.token[0] == '&'): #não achou nada
+                        self.err()
+                    #
                     self.token = self.get_token()
                     #
                     #pego o proximo token, se for um '.'
                     #então, é o fim do programa
                     #
                     if(self.token[0] == '.'):
-                        self.buffer.append(self.token[0])
+                        self.buffer.append(self.token)
                         self.pensamento += (self.buffer,)
                         self.buffer = []
                     else:
@@ -119,15 +122,15 @@ class a_sintatico():
         #estado para reconhcer os tipos de variavel
         #
         if(self.token[0] in ['boolean','char','integer', 'real', 'string']):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
         #
         elif(self.token[0] == 'array'):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             if(self.token[0] == '['):
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 #
                 while(True):
@@ -147,12 +150,12 @@ class a_sintatico():
                 #
                 #
                 if(self.token[0] == 'of'):
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.token = self.get_token()
                     self.type()
                     #
                     if(self.token[0] == ';'):
-                        self.buffer.append(self.token[0])
+                        self.buffer.append(self.token)
                         self.pensamento += (self.buffer,)
                         self.buffer = []
                         self.token = self.get_token()
@@ -174,7 +177,7 @@ class a_sintatico():
         self.const()
         #
         if(self.token[0] == '..'):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             self.const()
         else:
@@ -185,7 +188,7 @@ class a_sintatico():
     def const(self):
         #
         if(self.token[1] in ['STRING1','STRING2','ID','NUM_INT','NUM_FLOAT']):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
         #
         else:
@@ -200,7 +203,7 @@ class a_sintatico():
         #
         if(self.token[0] == 'var'):
             #
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.pensamento += (self.buffer,)
             self.buffer = []
             #
@@ -228,7 +231,7 @@ class a_sintatico():
             #
             #saiu do while, logo self.token guarda um 'end', o que é um estado para 'begin'
             #
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.pensamento += (self.buffer,)
             self.buffer = []
             ##
@@ -245,7 +248,7 @@ class a_sintatico():
         #
         if(self.token[1] == 'ID'):
             #statment para o tipo atribuição (a:= b+c;)
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             #pode encontrar algo do tipo a[xxx-14]
@@ -255,7 +258,7 @@ class a_sintatico():
             if(self.token[0] == ':='):
                 #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
                 #é uma expressão
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 self.exp()
         #
@@ -264,14 +267,14 @@ class a_sintatico():
             #
             #case -> exp -> of -> string | number | id -> , | : -> statm -> ; | end
             #
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             self.exp()
             #
             if(self.token[0] == 'of'):
                 #
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.pensamento += (self.buffer,)
                 self.buffer = []
                 self.token = self.get_token()
@@ -280,12 +283,12 @@ class a_sintatico():
                     #
                     if(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
                         #
-                        self.buffer.append(self.token[0])
+                        self.buffer.append(self.token)
                         self.token = self.get_token()
                         #
                         if(self.token[0] == ':'):
                             #
-                            self.buffer.append(self.token[0])
+                            self.buffer.append(self.token)
                             self.pensamento += (self.buffer,)
                             self.buffer = []
                             self.token = self.get_token()
@@ -301,11 +304,11 @@ class a_sintatico():
                         self.err2(self.token)
                     #
                 #
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 #
                 if(self.token[0] == ';'):
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.pensamento += (self.buffer,)
                     self.buffer = []
                     self.token = self.get_token()
@@ -322,30 +325,30 @@ class a_sintatico():
         #
         elif(self.token[0] == 'for'):
             #for -> id -> := -> exp -> to | downto -> exp -> do -> statm
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             if(self.token[1] == 'ID'):
                 #
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 #
                 if(self.token[0] == ':='):
                     #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
                     #é uma expressão
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.token = self.get_token()
                     self.exp()
                     #
                     if(self.token[0] == 'to' or self.token[0] == 'downto'):
                         #
-                        self.buffer.append(self.token[0])
+                        self.buffer.append(self.token)
                         self.token = self.get_token()
                         #
                         self.exp()
                         #
                         if(self.token[0] == 'do'):
-                            self.buffer.append(self.token[0])
+                            self.buffer.append(self.token)
                             self.pensamento += (self.buffer,)
                             self.buffer = []
                             #
@@ -371,14 +374,14 @@ class a_sintatico():
         #
         elif(self.token[0] == 'while'):
             #while -> EXP -> do -> STATM
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             self.exp()
             #
             if(self.token[0] == 'do'):
                 #
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.pensamento += (self.buffer,)
                 self.buffer = []
                 #
@@ -389,14 +392,14 @@ class a_sintatico():
         #
         elif(self.token[0] == 'if'):
             #
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             self.exp()
             #
             if(self.token[0] == 'then'):
                 #se ler um 'then', add a buffer esse token, add ao pensamento, limpa o buffer e pega o proximo token
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.pensamento += (self.buffer,)
                 self.buffer = []
                 self.token = self.get_token()
@@ -407,7 +410,7 @@ class a_sintatico():
                 #
                 if(self.token[0] == 'else'):
                     #
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.pensamento += (self.buffer,)
                     self.buffer = []
                     #
@@ -426,7 +429,7 @@ class a_sintatico():
         #
         elif(self.token[0] == 'begin'):
             #
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.pensamento += (self.buffer, )
             self.buffer = []
             #
@@ -442,12 +445,12 @@ class a_sintatico():
                 #add 'end' ao buffer e pede o proximo token
                 #pois pode ser um if-else
                 #
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 #
                 if(self.token[0] == ';'):
                     #
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.token = self.get_token()
                     #
                     #se entrou aqui por causa de um if composto, e houver um 'else' nesse token
@@ -485,20 +488,20 @@ class a_sintatico():
     def infipo(self):
         #le vetores e etc
         if(self.token[0] == '['):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token();
             #
             self.exp();
             #
             while(self.token[0] == ','):
                 #guardo no buffer e pego o proximo token
-                self.buffer.append(self.token[0]);
+                self.buffer.append(self.token);
                 self.token = self.get_token();
                 #
                 self.exp();
             #
             if(self.token[0] == ']'):
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
     #
     #
@@ -510,12 +513,12 @@ class a_sintatico():
         self.si_exp()
         #
         if(self.token[1] == 'SIMB_REL'):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             self.si_exp()
         #
         elif(self.token[0] == ';'):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.pensamento += (self.buffer,)
             self.buffer = []
             self.token = self.get_token()
@@ -530,7 +533,7 @@ class a_sintatico():
         self.term()
         #
         if(self.token[0] in ['+','-','or']):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
 
             if((self.token[0] in ['+','-','or','*','/','div','mod','and'])):
@@ -550,7 +553,7 @@ class a_sintatico():
         self.factor()
 
         if(self.token[0] in ['*','/','div','mod','and']):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
 
             if((self.token[0] in ['+','-','or','*','/','div','mod','and'])):
@@ -568,15 +571,15 @@ class a_sintatico():
         #estado para reconhecer alguma variavel,numero ou string
         #
         if(self.token[0] == '('):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             self.exp()
             if(self.token[0] == ')'):
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 return
         elif(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             return
         #
@@ -589,17 +592,17 @@ class a_sintatico():
         #
         if(self.token[1] == 'ID'):
             #
-            self.buffer.append(self.token[0])
+            self.buffer.append(self.token)
             self.token = self.get_token()
             #
             while(self.token[0] == ','):
                 #
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 #
                 if(self.token[1] == 'ID'):
                     #
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.token = self.get_token()
                     #
                 else:
@@ -608,14 +611,14 @@ class a_sintatico():
             #fim while
             if(self.token[0] == ':'):
                 #
-                self.buffer.append(self.token[0])
+                self.buffer.append(self.token)
                 self.token = self.get_token()
                 #
                 self.type()
                 #
                 if(self.token[0] == ';'):
                     #
-                    self.buffer.append(self.token[0])
+                    self.buffer.append(self.token)
                     self.pensamento += (self.buffer,)
                     self.buffer = []
                     #
@@ -628,8 +631,8 @@ class a_sintatico():
     #
     #
     #
-    def err(self,l,f):
-        print('erro> ',l,' não encontrado. Encontrado: "',f,'"')
+    def err(self):
+        print('ERRO::::  Fim de arquivo não esperado!!')
         exit(0)
     #
     def err2(self,token):
