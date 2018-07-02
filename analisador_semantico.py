@@ -27,7 +27,7 @@ class a_semantico():
 
     def __init__(self,arvore):
         #
-        #self.show_saida(arvore)
+        #self.show_arvore(arvore)
         #
         self.tab_sintatica = arvore
         self.tab_variaveis = () #tupla para a table de variaveis. ela é ([variavel,tipo,valor]). EX: ([a,integer,4]), ao declarar, o valor é dado como 0
@@ -40,6 +40,9 @@ class a_semantico():
         #
         self.var()
         #
+        self.pensamento = self.get_pensamento()
+        #
+        self.bloco()
         #
         #
         self.show_tab_var()
@@ -87,12 +90,26 @@ class a_semantico():
                 if(linha[1] == 'ID'):
                     buffer.append(linha[0]) #variavel
                     buffer.append(tipo) #tipo
-                    buffer.append(0) #valor
+                    buffer.append('&') #valor
                     #
                     self.tab_variaveis += (buffer,)
                     #
                     buffer = []
+            #
             self.pensamento = self.get_pensamento()
+        #fim do while
+    #
+    #
+    #
+    def bloco(self):
+        #
+        for (i,comando) in enumerate(self.pensamento):
+            #
+            if(comando[1] == 'ID'):
+                pass
+
+
+
     #
     #
     #
