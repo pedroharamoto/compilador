@@ -242,6 +242,8 @@ class a_sintatico():
             ##
             ##fim do begin
             ##
+        else:
+            self.err2(self.token)
     #
     #
     #
@@ -266,6 +268,8 @@ class a_sintatico():
                 self.buffer.append(self.token)
                 self.token = self.get_token()
                 self.exp()
+            else:
+                self.err2(self.token)
         #
         #
         elif(self.token[0] == 'case'):
@@ -653,8 +657,8 @@ class a_sintatico():
 # FIM DA CLASSE DO ANALISADOR SINTATICO
 #
 
-#sintatico = a_sintatico(tokens)
+sintatico = a_sintatico(tokens)
 
-#sintatico.inicio()
-#sintatico.show_saida()
-#sintatico.show_tokens()
+sintatico.inicio()
+sintatico.show_saida()
+sintatico.show_tokens()
