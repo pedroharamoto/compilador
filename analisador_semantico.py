@@ -40,10 +40,10 @@ class a_semantico():
         self.i = 0 #variavel para saber qual token dentro de um pensamento
         self.codigo_mepa = mepa
         self.tab_id = tab_id
-        self.tab_variaveis = [] #tabela de variaveis
         self.tab_armazenamento = [] #tabela de variaveis de armazenamento
         self.pos_arb = 100 #posicao para armazenar MEPA
-        self.tab_operacoes = [] #tabela para as operacoes >> FIFO
+        self.pilha_op = classes.pilha_pol() #tabela para as operacoes >> pós-fixa
+        self.prioridade = False
         #***************************
         self.tam_tab_sint = len(self.tab_sintatica) #tamanho de 'pensamentos'
         #
@@ -54,7 +54,13 @@ class a_semantico():
         self.token = self.get_pensamento()
         #self.show_pensamento()
         self.inicio()
-        print(self.codigo_mepa)
+        self.show_mepa()
+    #
+    #
+    #
+    def show_mepa(self):
+        for(i,comandos) in enumerate(self.codigo_mepa):
+            print(comandos) 
     #
     #
     #
@@ -66,42 +72,48 @@ class a_semantico():
     def realiza_exp(self):
         #
         #esse método irá fazer as 'contas'
-        #lembrando: tab_variaveis -> tira do topo
-        #lembrando: tab_operacoes -> FIFO
-        #primeiro: carregar as variaveis, depois executar as operacoes. dois a dois
-        #carrega 2 valores, executa 1 operação e chama realiza_exp novamente
-        #até que tab_var seja None
+        #é o metodo da notação polonesa reversa ou pos-fixa
         #
-        if(self.tab_variaveis):
-            x1 = self.tab_variaveis.pop(0) #pop() pega o topo da lista
-            #
-            if(x1[1] in ['NUM_FLOAT','NUM_INT']):
-                cod = "CRCT " + str(x1[0])
-                self.codigo_mepa.append(cod)
-            elif(x1[1] == 'ID'):
-                #buscar o endereço da variavel
-                x1 = self.procura_id(x1[0])
-                cod = "CRVL " + str(x1[0]) + ""
-                self.codigo_mepa.append(cod)
-            #
-            self.realiza_exp()
+        k = 0
+        j = (len(self.token)-2)
+        self.pilha_op.empilha('(')
         #
-        elif(self.tab_operacoes):
-            op1 = self.tab_operacoes.pop() #pop() pega o primeiro
-            if(op1 == '+'):
-                self.codigo_mepa.append("SOMA")
-            elif(op1 == '-'):
-                self.codigo_mepa.append("SUB")
-            elif(op1 == '*'):
-                self.codigo_mepa.append("MULT")
-            elif(op1 == '/'):
-                self.codigo_mepa.append("DIV")
-            elif(op1 == 'div'):
-                self.codigo_mepa.append("DIVI")
-            self.realiza_exp()
-        else:
-            return
-
+        while(k<j):
+            c = self.token[self.i]
+            #
+            if(c[1] in ['NUM_INT','NUM_FLOAT']):
+                codigo = "CRCT " + str(c[0])
+                self.codigo_mepa.append(codigo)
+            elif(c[1] == 'ID'):
+                codigo = "CRVR " + str(c[0])
+                self.codigo_mepa.append(codigo)
+            #
+            elif(c[0] == '('):
+                    self.pilha_op.empilha('(')
+            #
+            elif(c[0] == ')' or c[0] == ';'):
+                while True:
+                    t = self.pilha_op.desempilha()
+                    if(t != '('):
+                        codigo = classes.codigo(t[0])
+                        self.codigo_mepa.append(codigo)
+                    elif(t == '('):
+                        break
+            #
+            elif(c[0] == '+' or c[0] == '-' or c[0] == '*' or c[0] == '/'):
+                while True:
+                    t = self.pilha_op.desempilha()
+                    if(classes.prioridade(c[0],t)):
+                        self.pilha_op.empilha(t)
+                        self.pilha_op.empilha(c)
+                        break
+                    else:
+                        codigo = classes.codigo(t[0])
+                        self.codigo_mepa.append(codigo)
+            #
+            k += 1 #iteração do k
+            self.i += 1 #iteração dos tokens
+        self.i -= 1
     #
     #
     #
@@ -142,11 +154,9 @@ class a_semantico():
                     #atribuição
                     self.i += 1
                     self.tab_variaveis = []
-                    self.exp()
                     #
                     #aqui devo chamar a realiza_exp
                     #
-                    print(self.tab_operacoes)
                     self.realiza_exp()
                     #
                     if(self.token[self.i][0] == ';'):
@@ -163,82 +173,6 @@ class a_semantico():
             if(self.token[0][0] == '.'):
                 self.codigo_mepa.append("PARA")
         #END end
-    #
-    #
-    #
-    def exp(self):
-        #
-        #estado para ler uma expressao
-        #
-        self.si_exp()
-        #
-        if(self.token[self.i][1] == 'SIMB_REL'):
-            self.i += 1
-
-            if(not (self.token[self.i][1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2'])):
-                self.err2(self.token)
-
-            self.exp()
-
-        #
-    #
-    #
-    #
-    def si_exp(self):
-        #
-        #estado para reconhecer '+,-,or'
-        #
-        self.term()
-        #
-        if(self.token[self.i][0] in ['+','-','or']):
-            self.tab_operacoes.insert(0,self.token[self.i][0])
-            #jogar na tab de OPERACOES
-            self.i += 1
-            if((self.token[0][1] not in ['ID','NUM_FLOAT','NUM_INT'])):
-                #erro do tipo a := a-++b;
-                self.err2(self.token)
-
-            self.term()
-            self.si_exp()
-        #
-    #
-    #
-    #
-    def term(self):
-        #
-        #estado para reconhecer '*,/,div,mod,and'
-        #
-        self.factor()
-
-        if(self.token[self.i][0] in ['*','/','div','mod','and']):
-            self.tab_operacoes.insert(0,self.token[self.i][0])
-            self.i += 1
-
-            if((self.token[self.i][1] not in ['ID','NUM_FLOAT','NUM_INT'])):
-                #erro do tipo a := **mod a;
-                self.err2(self.token)
-
-            self.factor()
-            self.term()
-        #
-    #
-    #
-    #
-    def factor(self):
-        #
-        #estado para reconhecer alguma variavel,numero ou string
-        #
-        if(self.token[self.i][0] == '('):
-            self.i += 1
-            self.exp()
-            if(self.token[self.i][0] == ')'):
-                self.i += 1
-                return
-        #
-        elif(self.token[self.i][1] in ['NUM_FLOAT','NUM_INT','ID']):
-            self.tab_variaveis.insert(0,self.token[self.i])
-            self.i += 1
-        #
     #
     #
     #
