@@ -707,9 +707,9 @@ class a_sintatico():
 # FIM DA CLASSE DO ANALISADOR SINTATICO
 #
 
-sintatico = a_sintatico(tokens)
+#sintatico = a_sintatico(tokens)
 
-sintatico.inicio()
+#sintatico.inicio()
 #sintatico.show_saida()
 #sintatico.show_tokens()
 #sintatico.show_mepa()

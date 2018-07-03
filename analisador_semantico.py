@@ -40,9 +40,10 @@ class a_semantico():
         self.i = 0 #variavel para saber qual token dentro de um pensamento
         self.codigo_mepa = mepa
         self.tab_id = tab_id
-        self.tab_variaveis = classes.tab_variaveis() #tabela de variaveis
+        self.tab_variaveis = [] #tabela de variaveis
         self.tab_armazenamento = [] #tabela de variaveis de armazenamento
         self.pos_arb = 100 #posicao para armazenar MEPA
+        self.tab_operacoes = [] #tabela para as operacoes >> FIFO
         #***************************
         self.tam_tab_sint = len(self.tab_sintatica) #tamanho de 'pensamentos'
         #
@@ -59,6 +60,48 @@ class a_semantico():
     #
     def inicio(self):
         self.bloco()
+    #
+    #
+    #
+    def realiza_exp(self):
+        #
+        #esse método irá fazer as 'contas'
+        #lembrando: tab_variaveis -> tira do topo
+        #lembrando: tab_operacoes -> FIFO
+        #primeiro: carregar as variaveis, depois executar as operacoes. dois a dois
+        #carrega 2 valores, executa 1 operação e chama realiza_exp novamente
+        #até que tab_var seja None
+        #
+        if(self.tab_variaveis):
+            x1 = self.tab_variaveis.pop(0) #pop() pega o topo da lista
+            #
+            if(x1[1] in ['NUM_FLOAT','NUM_INT']):
+                cod = "CRCT " + str(x1[0])
+                self.codigo_mepa.append(cod)
+            elif(x1[1] == 'ID'):
+                #buscar o endereço da variavel
+                x1 = self.procura_id(x1[0])
+                cod = "CRVL " + str(x1[0]) + ""
+                self.codigo_mepa.append(cod)
+            #
+            self.realiza_exp()
+        #
+        elif(self.tab_operacoes):
+            op1 = self.tab_operacoes.pop() #pop() pega o primeiro
+            if(op1 == '+'):
+                self.codigo_mepa.append("SOMA")
+            elif(op1 == '-'):
+                self.codigo_mepa.append("SUB")
+            elif(op1 == '*'):
+                self.codigo_mepa.append("MULT")
+            elif(op1 == '/'):
+                self.codigo_mepa.append("DIV")
+            elif(op1 == 'div'):
+                self.codigo_mepa.append("DIVI")
+            self.realiza_exp()
+        else:
+            return
+
     #
     #
     #
@@ -98,7 +141,13 @@ class a_semantico():
                 if(self.token[self.i][0] == ':='):
                     #atribuição
                     self.i += 1
+                    self.tab_variaveis = []
                     self.exp()
+                    #
+                    #aqui devo chamar a realiza_exp
+                    #
+                    print(self.tab_operacoes)
+                    self.realiza_exp()
                     #
                     if(self.token[self.i][0] == ';'):
                         #
@@ -108,6 +157,12 @@ class a_semantico():
                         self.statm()
             else:
                 print("erro semantico:", self.token[0][0], "inesperado")
+        #end ID
+        elif(self.token[0][0] == 'end'):
+            self.token = self.get_pensamento()
+            if(self.token[0][0] == '.'):
+                self.codigo_mepa.append("PARA")
+        #END end
     #
     #
     #
@@ -117,22 +172,14 @@ class a_semantico():
         #
         self.si_exp()
         #
-        if(self.token[1] == 'SIMB_REL'):
-            self.buffer.append(self.token)
-            self.token = self.get_token()
+        if(self.token[self.i][1] == 'SIMB_REL'):
+            self.i += 1
 
-            if(not (self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2'])):
+            if(not (self.token[self.i][1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2'])):
                 self.err2(self.token)
 
             self.exp()
 
-        #
-        elif(self.token[0] == ';'):
-            self.buffer.append(self.token)
-            self.pensamento += (self.buffer,)
-            self.buffer = []
-            self.token = self.get_token()
-            return
         #
     #
     #
@@ -143,11 +190,11 @@ class a_semantico():
         #
         self.term()
         #
-        if(self.token[0] in ['+','-','or']):
-            self.buffer.append(self.token)
-            self.token = self.get_token()
-
-            if((self.token[1] not in ['ID','NUM_FLOAT','NUM_INT'])):
+        if(self.token[self.i][0] in ['+','-','or']):
+            self.tab_operacoes.insert(0,self.token[self.i][0])
+            #jogar na tab de OPERACOES
+            self.i += 1
+            if((self.token[0][1] not in ['ID','NUM_FLOAT','NUM_INT'])):
                 #erro do tipo a := a-++b;
                 self.err2(self.token)
 
@@ -164,8 +211,8 @@ class a_semantico():
         self.factor()
 
         if(self.token[self.i][0] in ['*','/','div','mod','and']):
-            self.buffer.append(self.token)
-            self.token = self.get_token()
+            self.tab_operacoes.insert(0,self.token[self.i][0])
+            self.i += 1
 
             if((self.token[self.i][1] not in ['ID','NUM_FLOAT','NUM_INT'])):
                 #erro do tipo a := **mod a;
@@ -188,9 +235,8 @@ class a_semantico():
                 self.i += 1
                 return
         #
-        elif(self.token[self.i][1] in ['NUM_FLOAT','NUM_INT']):
-            texto = "CRCT " + str(self.token[self.i][0])
-            self.codigo_mepa.append(texto)
+        elif(self.token[self.i][1] in ['NUM_FLOAT','NUM_INT','ID']):
+            self.tab_variaveis.insert(0,self.token[self.i])
             self.i += 1
         #
     #
@@ -200,6 +246,13 @@ class a_semantico():
         while(self.posicao < self.tam_tab_sint):
             self.posicao += 1
             return (self.tab_sintatica[self.posicao])
+    #
+    #
+    #
+    def err2(self,token):
+        print('ERRO:::: "',token,'" não esperado na linha',token)
+        exit(0)
+
 
 #
 # FIM DA CLASSE A_SEMANTICO()
