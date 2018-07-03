@@ -34,18 +34,35 @@ class a_semantico():
         #
         self.tab_sintatica = arvore
         self.tab_variaveis = classes.tab_variaveis() #tabela de variaveis
+        self.codigo_mepa = mepa
         #
         self.tam_tab_sint = len(self.tab_sintatica) #tamanho de 'pensamentos'
-        self.posicao = len(mepa)+1 #posição inicial dos pensamentos
+        #
+        self.posicao = len(mepa)+1
+        #posição inicial dos pensamentos
         #começo em len(mepa)+1, já pegou a parte do program e var no sintatico
         #o gerador mepa irá se preocupar a partir do begin/procedure
-        self.show_pensamento()
+        self.token = self.get_pensamento()
+        #self.show_pensamento()
+        self.inicio()
+        print(self.codigo_mepa)
     #
     #
     #
-    def show_pensamento(self):
+    def inicio(self):
+        self.bloco()
+    #
+    #
+    #
+    def bloco(self):
+        if(self.token[0][0] == 'begin'):
+            self.codigo_mepa.append('LEIT')
+    #
+    #
+    #
+    def get_pensamento(self):
         while(self.posicao < self.tam_tab_sint):
-            print(self.tab_sintatica[self.posicao])
+            return (self.tab_sintatica[self.posicao])
             self.posicao += 1
 
 #
