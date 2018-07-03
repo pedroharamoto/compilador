@@ -60,7 +60,7 @@ class a_semantico():
     #
     def show_mepa(self):
         for(i,comandos) in enumerate(self.codigo_mepa):
-            print(comandos) 
+            print(comandos)
     #
     #
     #
@@ -85,7 +85,8 @@ class a_semantico():
                 codigo = "CRCT " + str(c[0])
                 self.codigo_mepa.append(codigo)
             elif(c[1] == 'ID'):
-                codigo = "CRVR " + str(c[0])
+                p = self.procura_id(c[0])
+                codigo = "CRVL " + str(p[1])
                 self.codigo_mepa.append(codigo)
             #
             elif(c[0] == '('):
