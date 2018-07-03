@@ -33,11 +33,6 @@ class a_sintatico():
     #
     #
     #
-    def show_mepa(self):
-        print(self.cod_mepa)
-    #
-    #
-    #
     def get_token(self):
         #essa função irá retornar o token que está no topo da pilha
         if(len(self.tab_tokens) != 0):
@@ -54,6 +49,11 @@ class a_sintatico():
     #
     def create_arv_sintatica(self):
         return self.pensamento
+    #
+    #
+    #
+    def create_cod_mepa(self):
+        return self.cod_mepa
     #
     #
     #
@@ -696,7 +696,7 @@ class a_sintatico():
 
 sintatico = a_sintatico(tokens)
 
-#sintatico.inicio()
+sintatico.inicio()
 #sintatico.show_saida()
 #sintatico.show_tokens()
 #sintatico.show_mepa()
