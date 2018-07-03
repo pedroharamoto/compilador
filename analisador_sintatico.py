@@ -25,6 +25,16 @@ class a_sintatico():
         self.pensamento = () #indica um comando. Ex: program ex;
         self.tab_tokens = tokens
         self.token = self.get_token() #ja pega o primeiro token
+        #MEPA#
+        #**********#
+        self.cont_vars = 0
+        self.cod_mepa = []
+        #**********#
+    #
+    #
+    #
+    def show_mepa(self):
+        print(self.cod_mepa)
     #
     #
     #
@@ -605,7 +615,12 @@ class a_sintatico():
         #estado para ler a declarão de variavel. COMPLETO
         #
         if(self.token[1] == 'ID'):
-            #
+            #MEPA#
+            #aqui vou contar quantas variaveis serão alocadas pelo comando AMEM
+            #**********#
+            self.cont_vars = 0 #devo iniciar com 0, caso haja mais alguma declaração
+            self.cont_vars = self.cont_vars + 1 #como encontrei 1 ID, há pelo menos 1 variavel para ser alocada
+            #**********#
             self.buffer.append(self.token)
             self.token = self.get_token()
             #
@@ -615,6 +630,11 @@ class a_sintatico():
                 self.token = self.get_token()
                 #
                 if(self.token[1] == 'ID'):
+                    #MEPA#
+                    #procurando mais variaveis
+                    #**********#
+                    self.cont_vars = self.cont_vars + 1
+                    #**********#
                     #
                     self.buffer.append(self.token)
                     self.token = self.get_token()
@@ -631,6 +651,15 @@ class a_sintatico():
                 self.type()
                 #
                 if(self.token[0] == ';'):
+                    #MEPA#
+                    #encontrei todas para o exemplo a,b : integer;
+                    #**********#
+                    cod = "AMEM " + str(self.cont_vars)
+                    self.cod_mepa.append(cod)
+                    #**********#
+
+                    #
+                    #fim de uma declaração ex> a,b :integer; PODEM OCORRER MAIS DECLARAÇÕES. ESTE É O FIM DE APENAS 1
                     #
                     self.buffer.append(self.token)
                     self.pensamento += (self.buffer,)
@@ -640,6 +669,7 @@ class a_sintatico():
                     #
                     if(self.token[1] == 'ID'):
                         #se encontrar outro id, deve-se voltar a esse estado para os mesmos passos.
+                        #ou seja, há outra declaração
                         self.var()
                     #endif
     #
@@ -660,5 +690,6 @@ class a_sintatico():
 sintatico = a_sintatico(tokens)
 
 sintatico.inicio()
-sintatico.show_saida()
-sintatico.show_tokens()
+#sintatico.show_saida()
+#sintatico.show_tokens()
+sintatico.show_mepa()
