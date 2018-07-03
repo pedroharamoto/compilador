@@ -9,6 +9,8 @@
 #importando a classe do analisador lexico
 import analisador_lexico
 
+import classes
+
 #gerando a tabela de tokens com a função get_tokens da classe do analisador lexico
 tokens = analisador_lexico.afd_lexico().create_table_token()
 
@@ -29,6 +31,8 @@ class a_sintatico():
         #**********#
         self.cont_vars = 0 #variavel para contar a quantidade de variaveis que serao alocadas
         self.cod_mepa = [] #variavel para guardar as instruções MEPA
+        self.tab_id = [] #tabela de idetificadores e suas posicoes
+        self.tab_id_pos = 100 #posicao inicial
         #**********#
     #
     #
@@ -49,6 +53,11 @@ class a_sintatico():
     #
     def create_arv_sintatica(self):
         return self.pensamento
+    #
+    #
+    #
+    def create_tab_id(self):
+        return self.tab_id
     #
     #
     #
@@ -627,6 +636,8 @@ class a_sintatico():
             #**********#
             self.cont_vars = 0 #devo iniciar com 0, caso haja mais alguma declaração
             self.cont_vars = self.cont_vars + 1 #como encontrei 1 ID, há pelo menos 1 variavel para ser alocada
+            self.tab_id.append([self.token[0],self.tab_id_pos])
+            self.tab_id_pos += 1
             #**********#
             self.buffer.append(self.token)
             self.token = self.get_token()
@@ -640,6 +651,8 @@ class a_sintatico():
                     #MEPA#
                     #procurando mais variaveis
                     #**********#
+                    self.tab_id.append([self.token[0],self.tab_id_pos])
+                    self.tab_id_pos += 1
                     self.cont_vars = self.cont_vars + 1
                     #**********#
                     #
