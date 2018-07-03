@@ -271,7 +271,6 @@ class a_sintatico():
         #print('oi',self.token)
         #
         if(self.token[1] == 'ID'):
-            print(self.token)
             #statment para o tipo atribuição (a:= b+c;)
             self.buffer.append(self.token)
             self.token = self.get_token()
@@ -283,7 +282,6 @@ class a_sintatico():
             if(self.token[0] == ':='):
                 #se encontrar uma operação de atr, chamara a função para verificar se o proximo 'comando'
                 #é uma expressão
-                print(self.token)
                 self.buffer.append(self.token)
                 self.token = self.get_token()
                 self.exp()
@@ -586,7 +584,6 @@ class a_sintatico():
         self.factor()
 
         if(self.token[0] in ['*','/','div','mod','and']):
-            print(self.token)
             self.buffer.append(self.token)
             self.token = self.get_token()
 
@@ -613,7 +610,6 @@ class a_sintatico():
                 self.token = self.get_token()
                 return
         elif(self.token[1] in ['ID','NUM_FLOAT','NUM_INT','STRING1','STRING2']):
-            print(self.token)
             self.buffer.append(self.token)
             self.token = self.get_token()
             return
@@ -700,7 +696,7 @@ class a_sintatico():
 
 sintatico = a_sintatico(tokens)
 
-sintatico.inicio()
+#sintatico.inicio()
 #sintatico.show_saida()
 #sintatico.show_tokens()
 #sintatico.show_mepa()

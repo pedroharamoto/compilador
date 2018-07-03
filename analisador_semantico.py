@@ -33,19 +33,11 @@ class a_semantico():
         self.tab_variaveis = () #tupla para a table de variaveis. ela é ([variavel,tipo,valor]). EX: ([a,integer,4]), ao declarar, o valor é dado como 0
         self.tab_procedures = []
         #
-        self.posicao = 1 #posição inicial dos pensamentos
+
+        self.tam_tab_sint = len(self.tab_sintatica)
+        self.posicao = 0 #posição inicial dos pensamentos
         #começo em 1, pois a posição 0 é a 'program ex1;', como ja passou pelo sintatico, não preciso verificar essa parte, semanticamente
         #e a posição 1 é o pensamento "var"
-        self.pensamento = self.get_pensamento()
-        #
-        self.var()
-        #
-        self.pensamento = self.get_pensamento()
-        #
-        self.bloco()
-        #
-        #
-        self.show_tab_var()
     #
     #
     #
@@ -56,60 +48,10 @@ class a_semantico():
     #
     #
     #
-    def get_pensamento(self):
-        #essa função irá retornar o pensamento que está no topo da pilha
-        if(len(self.tab_sintatica) != 0):
+    def show_pensamento(self):
+        while(self.posicao < self.tam_tab_sint):
+            print(self.tab_sintatica[self.posicao],'\n')
             self.posicao += 1
-            return (self.tab_sintatica[self.posicao])
-        #
-        #
-
-    #
-    #
-    #
-    def var(self):
-        #
-        #essa função irá add à tabela tab_variaveis todas as variaveis declaradas
-        #
-        buffer = []
-        #
-        while(self.pensamento[0][0] != 'begin'):
-            #
-            for(i,linha) in enumerate(self.pensamento):
-                #
-                #for para descobrir qual é o tipo das variaveis que estão sendo declaradas
-                # a,b,c : integer;
-                #
-                if(linha[1] == 'PALAVRA_RESERVADA'):
-                    tipo = linha[0]
-            #
-            for(i,linha) in enumerate(self.pensamento):
-                #
-                #for para add à tab_variaveis
-                #
-                if(linha[1] == 'ID'):
-                    buffer.append(linha[0]) #variavel
-                    buffer.append(tipo) #tipo
-                    buffer.append('&') #valor
-                    #
-                    self.tab_variaveis += (buffer,)
-                    #
-                    buffer = []
-            #
-            self.pensamento = self.get_pensamento()
-        #fim do while
-    #
-    #
-    #
-    def bloco(self):
-        #
-        for (i,comando) in enumerate(self.pensamento):
-            #
-            if(comando[1] == 'ID'):
-                pass
-
-
-
     #
     #
     #
@@ -118,6 +60,8 @@ class a_semantico():
         for (i,linha) in enumerate(arvore):
             for(j,coluna) in enumerate(linha):
                print(coluna)
+    #
+    #
     #
     def show_arvore(self,arvore):
         #
@@ -135,3 +79,4 @@ class a_semantico():
 #
 
 semantico = a_semantico(arv_sintatica)
+semantico.show_pensamento()
