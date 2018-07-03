@@ -36,7 +36,16 @@ def codigo(t):
         return "SUB"
     elif(t == '/'):
         return "DIV"
-
+    elif(t == '>'):
+        return "CMMA"
+    elif(t == '<'):
+        return "CMME"
+    elif(t == '<=' or t == '=<'):
+        return "CMEG"
+    elif(t == '>=' or t == '=>'):
+        return "CMAG"
+    elif(t == '='):
+        return "CMIG"
 #
 #
 #
@@ -54,6 +63,8 @@ def prioridade(c, t):
         pc = 1
     elif(c == '('):
         pc = 4
+    elif(c in ['<','<=','>','>=','=','=>','=<']):
+        pc = 1
 
     if(t == '^'):
         pt = 3
@@ -63,9 +74,9 @@ def prioridade(c, t):
         pt = 1
     elif(t == '('):
         pt = 0
+    elif(t in ['<','<=','>','>=','=','=>','=<']):
+        pc = 1
     else:
         pt = 0
 
     return (pc > pt)
-
-codigo('+')

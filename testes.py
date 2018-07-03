@@ -9,6 +9,8 @@ def prioridade(c, t):
         pc = 1
     elif(c == '('):
         pc = 4
+    elif(c in ['<','<=','>','>=','=','>=','<=']):
+        pc = 1
 
     if(t == '^'):
         pt = 3
@@ -18,6 +20,8 @@ def prioridade(c, t):
         pt = 1
     elif(t == '('):
         pt = 0
+    elif(t in ['<','<=','>','>=','=','>=','<=']):
+        pc = 1
     else:
         pt = 0
 
@@ -36,7 +40,7 @@ class pilha_pol:
             return None
 
 
-opera = '(a-b)*c;'
+opera = 'c+a=b;'
 print(opera)
 i = 0
 p = pilha_pol()
@@ -59,7 +63,7 @@ while(i<j):
             elif(t == '('):
                 break
     #
-    elif(c == '+' or c == '-' or c == '*' or c == '/'):
+    elif(c == '+' or c == '-' or c == '*' or c == '/' or c in ['<','<=','>','>=','=','>=','<=']):
         while True:
             t = p.desempilha()
             if(prioridade(c,t)):

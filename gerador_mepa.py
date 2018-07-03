@@ -55,6 +55,7 @@ class a_semantico():
         #self.show_pensamento()
         self.inicio()
         self.show_mepa()
+        #self.show_saida()
     #
     #
     #
@@ -86,7 +87,7 @@ class a_semantico():
                 self.codigo_mepa.append(codigo)
             elif(c[1] == 'ID'):
                 p = self.procura_id(c[0])
-                codigo = "CRVL " + str(p[1])
+                codigo = "CRVL " + str(c[0])
                 self.codigo_mepa.append(codigo)
             #
             elif(c[0] == '('):
@@ -96,17 +97,17 @@ class a_semantico():
                 while True:
                     t = self.pilha_op.desempilha()
                     if(t != '('):
-                        codigo = classes.codigo(t[0])
+                        codigo = classes.codigo(t)
                         self.codigo_mepa.append(codigo)
                     elif(t == '('):
                         break
             #
-            elif(c[0] == '+' or c[0] == '-' or c[0] == '*' or c[0] == '/'):
+            elif(c[0] == '+' or c[0] == '-' or c[0] == '*' or c[0] == '/' or c[0] in ['<','<=','>','>=','=','=>','=<']):
                 while True:
                     t = self.pilha_op.desempilha()
                     if(classes.prioridade(c[0],t)):
                         self.pilha_op.empilha(t)
-                        self.pilha_op.empilha(c)
+                        self.pilha_op.empilha(c[0])
                         break
                     else:
                         codigo = classes.codigo(t[0])
@@ -181,6 +182,12 @@ class a_semantico():
         while(self.posicao < self.tam_tab_sint):
             self.posicao += 1
             return (self.tab_sintatica[self.posicao])
+    #
+    #
+    #
+    def show_saida(self):
+        for(i,linha) in enumerate(self.tab_sintatica):
+            print(linha,'\n')
     #
     #
     #
