@@ -298,6 +298,18 @@ class a_sintatico():
                 self.err2(self.token)
         #
         #
+        elif(self.token[0] == 'read'):
+            self.buffer.append(self.token)
+            self.token = self.get_token()
+            self.exp()
+        #
+        #
+        elif(self.token[0] == 'write'):
+            self.buffer.append(self.token)
+            self.token = self.get_token()
+            self.exp()
+        #
+        #
         elif(self.token[0] == 'case'):
             #
             #case -> exp -> of -> string | number | id -> , | : -> statm -> ; | end
