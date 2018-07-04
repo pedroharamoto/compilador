@@ -44,6 +44,7 @@ class a_semantico():
         self.pos_arb = 100 #posicao para armazenar MEPA
         self.pilha_op = classes.pilha_pol() #tabela para as operacoes >> pós-fixa
         self.prioridade = False
+        self.rotulo = 1
         #***************************
         self.tam_tab_sint = len(self.tab_sintatica) #tamanho de 'pensamentos'
         #
@@ -75,8 +76,9 @@ class a_semantico():
         #esse método irá fazer as 'contas'
         #é o metodo da notação polonesa reversa ou pos-fixa
         #
+        #
         k = 0
-        j = (len(self.token)-2)
+        j = (len(self.token)-self.i)
         self.pilha_op.empilha('(')
         #
         while(k<j):
@@ -93,7 +95,7 @@ class a_semantico():
             elif(c[0] == '('):
                     self.pilha_op.empilha('(')
             #
-            elif(c[0] == ')' or c[0] == ';'):
+            elif(c[0] == ')' or c[0] == ';' or c[0] == 'then'):
                 while True:
                     t = self.pilha_op.desempilha()
                     if(t != '('):
@@ -170,6 +172,20 @@ class a_semantico():
             else:
                 print("erro semantico:", self.token[0][0], "inesperado")
         #end ID
+        elif(self.token[0][0] == 'if'):
+            self.i += 1
+            self.realiza_exp()
+            #
+            #pulo pro else, se tiver é necessario tratar, senão é só ignora
+            #
+            codigo = "DSVF L" + str(self.rotulo)
+            self.rotulo += 1
+            self.codigo_mepa.append(codigo)
+            #
+            #
+            self.token = self.get_pensamento()
+            self.statm()
+        #end if
         elif(self.token[0][0] == 'end'):
             self.token = self.get_pensamento()
             if(self.token[0][0] == '.'):

@@ -40,7 +40,7 @@ class pilha_pol:
             return None
 
 
-opera = 'c+a=b;'
+opera = 'a>b;'
 print(opera)
 i = 0
 p = pilha_pol()
