@@ -1,17 +1,19 @@
-{comentarios}
 program ex1;
 var
-a, b, c, i : integer;
-d : real;
+n,k: integer;
+f1,f2,f3: integer;
 begin
-	read(a,b,c);
-	if(a>b) then
-		a:= 4;
-	else
-		a:=5;
+	read(n);
 
-	if(a<b) then begin
-		read(c,i);
-		d := a*b/2 + i;
+	f1:=0;
+	f2:=1;
+	k:=1;
+	while k <= n do begin
+		f3:= f1 + f2;
+		f1 :=f2;
+		f2 := f3;
+		k := k + 1;
 	end;
+
+	write(n,f1);
 end.
