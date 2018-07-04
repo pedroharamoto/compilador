@@ -299,9 +299,36 @@ class a_sintatico():
         #
         #
         elif(self.token[0] == 'read'):
-            self.buffer.append(self.token)
+            self.buffer.append(self.token) #buffer: read
             self.token = self.get_token()
-            self.exp()
+            #
+            if(self.token[0] == '('):
+                self.buffer.append(self.token) #buffer: read, (
+                self.token = self.get_token()
+
+                while(True):
+                    if(self.token[1] == 'ID'):
+                        self.buffer.append(self.token) #buffer: read,(,ID, ..
+                        self.token = self.get_token()
+                        if(self.token[0] == ','):
+                            self.token = self.get_token()
+                        elif(self.token[0] == ')'):
+                            self.buffer.append(self.token) #buffer: read (a,a,..,a)
+                            self.token = self.get_token()
+                            if(self.token[0] == ';'):
+                                self.buffer.append(self.token) #buffer: read(a,a,..a);
+                                self.pensamento += (self.buffer,)
+                                self.buffer = []
+                                self.token = self.get_token()
+                                break
+                            else:
+                                self.err2(self.token)
+                        else:
+                            self.err2(self.token)
+                    else:
+                        self.err2(self.token)
+            else:
+                self.err2(self.token)
         #
         #
         elif(self.token[0] == 'write'):
