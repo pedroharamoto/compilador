@@ -241,7 +241,16 @@ class a_semantico():
         #end ID
         elif(self.token[0][0] == 'if'):
             self.i += 1
-            self.realiza_exp()
+            #prepara para chamar o realiza_exp()
+            exp = []
+            while(True):
+                exp.append(self.token[self.i])
+                self.i += 1
+                if(self.token[self.i][0] == 'then'):
+                    exp.append(self.token[self.i])
+                    break
+            #
+            self.realiza_exp(exp)
             #
             #pulo pro else, se tiver é necessario tratar, senão é só ignora
             #
