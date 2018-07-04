@@ -138,11 +138,13 @@ class a_semantico():
             #
             self.statm()
             #
-            if(self.token[self.i][0] == 'end'):
+            self.token = self.get_pensamento()
+            if(self.token[0][0] == 'end'):
                     self.token = self.get_pensamento()
-                    if(self.token[self.i][0] == '.'):
+                    if(self.token[0][0] == '.'):
                         self.codigo_mepa.append("PARA")
             #END end
+
     #
     #
     #
@@ -190,7 +192,9 @@ class a_semantico():
             self.codigo_mepa.append(codigo)
             codigo = "L"+str((n_rotulo)) + " NADA"
             self.codigo_mepa.append(codigo)
-
+            #
+            self.token = self.get_pensamento()
+            self.statm()
         #
         elif(self.token[self.i][0] == 'write'):
             #write(a,b*c);
