@@ -430,6 +430,9 @@ class a_sintatico():
             self.buffer.append(self.token)
             self.token = self.get_token()
             #
+            if(self.token[0] == 'then'):
+                self.err2(self.token)
+            #
             self.exp()
             #
             if(self.token[0] == 'then'):

@@ -89,7 +89,7 @@ class a_semantico():
                 self.codigo_mepa.append(codigo)
             elif(c[1] == 'ID'):
                 p = self.procura_id(c[0])
-                codigo = "CRVL " + str(c[0])
+                codigo = "CRVL " + str(p[0])
                 self.codigo_mepa.append(codigo)
             #
             elif(c[0] == '('):
@@ -130,7 +130,7 @@ class a_semantico():
             if(linha[0] == id):
                 return linha
         #
-        return None #nao achou nada
+        return self.err2(id) #nao achou nada
     #
     #
     def bloco(self):
@@ -145,7 +145,14 @@ class a_semantico():
     def statm(self):
 
         self.i = 0
-
+        #
+        if(self.token[self.i][0] == 'begin'):
+            self.token = self.get_pensamento()
+            self.statm()
+            #
+            #aqui acabou o begin .. end;
+            #
+        #
         if(self.token[0][1] == 'ID'):
             #
             #possível atribuição
@@ -165,7 +172,7 @@ class a_semantico():
                     #
                     if(self.token[self.i][0] == ';'):
                         #
-                        texto = "ARMZ " + str(var[1])
+                        texto = "ARMZ " + str(var[0])
                         self.codigo_mepa.append(texto)
                         self.token = self.get_pensamento()
                         self.statm()
@@ -179,13 +186,19 @@ class a_semantico():
             #pulo pro else, se tiver é necessario tratar, senão é só ignora
             #
             codigo = "DSVF L" + str(self.rotulo)
-            self.rotulo += 1
             self.codigo_mepa.append(codigo)
             #
             #
             self.token = self.get_pensamento()
             self.statm()
         #end if
+        elif(self.token[0][0] == 'else'):
+            codigo = "L" + str(self.rotulo) + " NADA"
+            self.rotulo += 1
+            self.codigo_mepa.append(codigo)
+            self.token = self.get_pensamento()
+            self.statm()
+        #end else
         elif(self.token[0][0] == 'end'):
             self.token = self.get_pensamento()
             if(self.token[0][0] == '.'):
@@ -208,7 +221,7 @@ class a_semantico():
     #
     #
     def err2(self,token):
-        print('ERRO:::: "',token,'" não esperado na linha',token)
+        print('ERRO semantico:::: "',token,'" não esperado')
         exit(0)
 
 
