@@ -42,7 +42,6 @@ class a_semantico():
         self.tab_id = tab_id
         self.tab_armazenamento = [] #tabela de variaveis de armazenamento
         self.pos_arb = 100 #posicao para armazenar MEPA
-        self.pilha_op = classes.pilha_pol() #tabela para as operacoes >> pós-fixa
         self.prioridade = False
         self.rotulo = 1
         #***************************
@@ -71,18 +70,19 @@ class a_semantico():
     #
     #
     #
-    def realiza_exp(self):
+    def realiza_exp(self,exp):
         #
         #esse método irá fazer as 'contas'
         #é o metodo da notação polonesa reversa ou pos-fixa
         #
-        #
         k = 0
-        j = (len(self.token)-self.i)
-        self.pilha_op.empilha('(')
+        j = len(exp)
+        #
+        pilha_op = classes.pilha_pol() #tabela para as operacoes >> pós-fixa
+        pilha_op.empilha('(')
         #
         while(k<j):
-            c = self.token[self.i]
+            c = exp[k]
             #
             if(c[1] in ['NUM_INT','NUM_FLOAT']):
                 codigo = "CRCT " + str(c[0])
@@ -93,11 +93,11 @@ class a_semantico():
                 self.codigo_mepa.append(codigo)
             #
             elif(c[0] == '('):
-                    self.pilha_op.empilha('(')
+                    pilha_op.empilha('(')
             #
-            elif(c[0] == ')' or c[0] == ';' or c[0] == 'then'):
+            elif(c[0] == ')' or c[0] == ';' or c[0] == 'then' or c[0] == ','):
                 while True:
-                    t = self.pilha_op.desempilha()
+                    t = pilha_op.desempilha()
                     if(t != '('):
                         codigo = classes.codigo(t)
                         self.codigo_mepa.append(codigo)
@@ -106,18 +106,17 @@ class a_semantico():
             #
             elif(c[0] == '+' or c[0] == '-' or c[0] == '*' or c[0] == '/' or c[0] in ['<','<=','>','>=','=','=>','=<']):
                 while True:
-                    t = self.pilha_op.desempilha()
+                    t = pilha_op.desempilha()
                     if(classes.prioridade(c[0],t)):
-                        self.pilha_op.empilha(t)
-                        self.pilha_op.empilha(c[0])
+                        pilha_op.empilha(t)
+                        pilha_op.empilha(c[0])
                         break
                     else:
                         codigo = classes.codigo(t[0])
                         self.codigo_mepa.append(codigo)
             #
-            k += 1 #iteração do k
-            self.i += 1 #iteração dos tokens
-        self.i -= 1
+            k += 1
+            #
     #
     #
     #
@@ -130,12 +129,11 @@ class a_semantico():
             if(linha[0] == id):
                 return linha
         #
-        return self.err2(id) #nao achou nada
+        return None #nao achou nada
     #
     #
     def bloco(self):
         if(self.token[0][0] == 'begin'):
-            self.codigo_mepa.append('LEIT')
             self.token = self.get_pensamento()
             #
             self.statm()
@@ -153,6 +151,61 @@ class a_semantico():
             #aqui acabou o begin .. end;
             #
         #
+        if(self.token[self.i][0] == 'write'):
+            #write(a,b*c);
+            self.i += 1 # >>> (
+            self.i += 1
+            #
+            while(True):
+
+                exp = []
+                while(True):
+                    exp.append(self.token[self.i])
+                    self.i += 1
+                    if(self.token[self.i][0] == ','):
+                        exp.append(self.token[self.i])
+                        self.realiza_exp(exp)
+                        self.codigo_mepa.append('IMPR')
+                        self.i += 1
+                        break
+                    if(self.token[self.i][0] == ')'):
+                        exp.append([',','SIMB_PONT',self.i])
+                        self.realiza_exp(exp)
+                        self.codigo_mepa.append('IMPR')
+                        self.i+=1
+                        break
+                #
+                if(self.token[self.i][0] in [')',';']):
+                    break
+
+
+        #end write
+        #
+        if(self.token[self.i][0] == 'read'):
+            #read(a,b);
+            self.i += 1 #aqui será um parenteses
+            self.i += 1 #será a primeira variavel
+            #
+            while(True):
+                var = self.procura_id(self.token[self.i][0])
+                if(var):
+                    self.codigo_mepa.append('LEIT')
+                    #
+                    codigo = "ARMZ " + str(var[0]) #0: nome; 1:posicao
+                    self.codigo_mepa.append(codigo)
+                #
+                else:
+                    self.err2(self.token[self.i])
+                self.i += 1
+                if(self.token[self.i][0] == ','):
+                    self.i += 1
+                elif(self.token[self.i][0] == ')'):
+                    break
+            #
+            self.token = self.get_pensamento()
+            self.statm()
+
+        #end read
         if(self.token[0][1] == 'ID'):
             #
             #possível atribuição
@@ -164,11 +217,18 @@ class a_semantico():
                 if(self.token[self.i][0] == ':='):
                     #atribuição
                     self.i += 1
-                    self.tab_variaveis = []
                     #
                     #aqui devo chamar a realiza_exp
                     #
-                    self.realiza_exp()
+                    exp = []
+                    while(True):
+                        exp.append(self.token[self.i])
+                        self.i += 1
+                        if(self.token[self.i][0] == ';'):
+                            exp.append(self.token[self.i])
+                            break
+                    #
+                    self.realiza_exp(exp)
                     #
                     if(self.token[self.i][0] == ';'):
                         #
@@ -177,7 +237,7 @@ class a_semantico():
                         self.token = self.get_pensamento()
                         self.statm()
             else:
-                print("erro semantico:", self.token[0][0], "inesperado")
+                self.err2(self.token[self.i])
         #end ID
         elif(self.token[0][0] == 'if'):
             self.i += 1
@@ -221,7 +281,7 @@ class a_semantico():
     #
     #
     def err2(self,token):
-        print('ERRO semantico:::: "',token,'" não esperado')
+        print('ERRO semantico:::: "',token[0],'" não esperado na linha',token[2])
         exit(0)
 
 
