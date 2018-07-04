@@ -136,9 +136,13 @@ class a_semantico():
         if(self.token[0][0] == 'begin'):
             self.token = self.get_pensamento()
             #
-            self.statm()
+            while(True):
+                if(self.token[0][0] != 'end'):
+                    self.statm()
+                    self.token = self.get_pensamento()
+                else:
+                    break
             #
-            self.token = self.get_pensamento()
             if(self.token[0][0] == 'end'):
                     self.token = self.get_pensamento()
                     if(self.token[0][0] == '.'):
@@ -154,11 +158,97 @@ class a_semantico():
         #
         if(self.token[self.i][0] == 'begin'):
             self.token = self.get_pensamento()
-            self.statm()
+            while(True):
+                if(self.token[0][0] != 'end'):
+                    self.statm()
+                    self.token = self.get_pensamento()
+                else:
+                    break
             #
             #aqui acabou o begin .. end;
             #
         #
+        elif(self.token[self.i][0] == 'for'):
+            self.i += 1 #i
+            #carregar a expressao
+            armz = self.token[self.i]
+            #
+            self.i += 2 # := exp()
+            #
+            exp = []
+            while(True):
+                exp.append(self.token[self.i])
+                self.i += 1
+                #
+                if(self.token[self.i][0] == 'to'):
+                    f = 1 #é um to
+                    exp.append(self.token[self.i])
+                    break
+                elif(self.token[self.i][0] == 'downto'):
+                    f = 2 #é um downto
+                    exp.append(self.token[self.i])
+                    break
+            #
+            self.realiza_exp(exp)
+            #agora temos q armazenar em ARMZ
+            codigo = "ARMZ " + str(armz[0]) #0: nome, 1:posicao
+            self.codigo_mepa.append(codigo)
+            #
+            n_rotulo = self.rotulo
+            codigo = "L" +str(n_rotulo)+" NADA"
+            self.rotulo += 1
+            #
+            self.codigo_mepa.append(codigo)
+            codigo = "CRVL "+ str(armz[0]) #0: nome, 1:posicao
+            self.codigo_mepa.append(codigo)
+            #
+            self.i += 1 #to ou downto
+            #
+            exp = []
+            while(True):
+                exp.append(self.token[self.i])
+                self.i += 1
+                #
+                if(self.token[self.i][0] == 'do'):
+                    exp.append(self.token[self.i])
+                    break
+            self.realiza_exp(exp)
+            #
+            #aqui ja temos o começo do for, precisamos saber se é to ou downto para continuar
+            #
+            if(f == 1): #to
+                self.codigo_mepa.append('CMEG')
+            else: #downto
+                self.codigo_mepa.append('CMAG')
+            #desvia para o fim se for falso
+            n_rotulo = self.rotulo
+            codigo = 'DSVF L'+str(n_rotulo)
+            self.rotulo += 1
+            self.codigo_mepa.append(codigo)
+            #
+            #tradução dos statm, é só chamar statm
+            #
+            self.token = self.get_pensamento()
+            self.statm()
+            #
+            #incrementa o iterador do for, i por exemplo
+            #
+            codigo = "CRVL " + str(armz[0]) #0:nome, 1:posicao
+            self.codigo_mepa.append(codigo)
+            self.codigo_mepa.append('CRCT 1')
+            #
+            if(f == 1): #to
+                self.codigo_mepa.append('SOMA')
+            else: #downto
+                self.codigo_mepa.append('SUB')
+            #
+            codigo = "ARMZ " + str(armz[0]) #0:nome, 1:posicao
+            self.codigo_mepa.append(codigo)
+            #
+            self.codigo_mepa.append("DSVS L"+str(n_rotulo-1))
+            self.codigo_mepa.append("L"+str(n_rotulo)+" NADA")
+            #
+        #end for
         elif(self.token[self.i][0] == 'while'):
             n_rotulo = self.rotulo
             codigo = "L"+str(n_rotulo)+" NADA"
@@ -193,8 +283,6 @@ class a_semantico():
             codigo = "L"+str((n_rotulo)) + " NADA"
             self.codigo_mepa.append(codigo)
             #
-            self.token = self.get_pensamento()
-            self.statm()
         #
         elif(self.token[self.i][0] == 'write'):
             #write(a,b*c);
@@ -222,8 +310,6 @@ class a_semantico():
                 #
                 if(self.token[self.i][0] in [')',';']):
                     break
-
-
         #end write
         #
         elif(self.token[self.i][0] == 'read'):
@@ -247,9 +333,6 @@ class a_semantico():
                 elif(self.token[self.i][0] == ')'):
                     break
             #
-            self.token = self.get_pensamento()
-            self.statm()
-
         #end read
         elif(self.token[0][1] == 'ID'):
             #
@@ -279,8 +362,6 @@ class a_semantico():
                         #
                         texto = "ARMZ " + str(var[0])
                         self.codigo_mepa.append(texto)
-                        self.token = self.get_pensamento()
-                        self.statm()
             else:
                 self.err2(self.token[self.i])
         #end ID
@@ -303,15 +384,11 @@ class a_semantico():
             self.codigo_mepa.append(codigo)
             #
             #
-            self.token = self.get_pensamento()
-            self.statm()
         #end if
         elif(self.token[0][0] == 'else'):
             codigo = "L" + str(self.rotulo) + " NADA"
             self.rotulo += 1
             self.codigo_mepa.append(codigo)
-            self.token = self.get_pensamento()
-            self.statm()
         #end else
     #
     #
