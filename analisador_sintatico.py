@@ -301,34 +301,8 @@ class a_sintatico():
         elif(self.token[0] == 'read'):
             self.buffer.append(self.token) #buffer: read
             self.token = self.get_token()
+            self.exp()
             #
-            if(self.token[0] == '('):
-                self.buffer.append(self.token) #buffer: read, (
-                self.token = self.get_token()
-
-                while(True):
-                    if(self.token[1] == 'ID'):
-                        self.buffer.append(self.token) #buffer: read,(,ID, ..
-                        self.token = self.get_token()
-                        if(self.token[0] == ','):
-                            self.token = self.get_token()
-                        elif(self.token[0] == ')'):
-                            self.buffer.append(self.token) #buffer: read (a,a,..,a)
-                            self.token = self.get_token()
-                            if(self.token[0] == ';'):
-                                self.buffer.append(self.token) #buffer: read(a,a,..a);
-                                self.pensamento += (self.buffer,)
-                                self.buffer = []
-                                self.token = self.get_token()
-                                break
-                            else:
-                                self.err2(self.token)
-                        else:
-                            self.err2(self.token)
-                    else:
-                        self.err2(self.token)
-            else:
-                self.err2(self.token)
         #
         #
         elif(self.token[0] == 'write'):
@@ -634,7 +608,7 @@ class a_sintatico():
         #
         self.factor()
 
-        if(self.token[0] in ['*','/','div','mod','and']):
+        if(self.token[0] in ['*','/','div','mod','and',',']):
             self.buffer.append(self.token)
             self.token = self.get_token()
 
@@ -749,9 +723,9 @@ class a_sintatico():
 # FIM DA CLASSE DO ANALISADOR SINTATICO
 #
 
-#sintatico = a_sintatico(tokens)
+sintatico = a_sintatico(tokens)
 
-#sintatico.inicio()
-#sintatico.show_saida()
-#sintatico.show_tokens()
+sintatico.inicio()
+sintatico.show_saida()
+sintatico.show_tokens()
 #sintatico.show_mepa()
