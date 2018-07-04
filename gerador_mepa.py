@@ -95,7 +95,7 @@ class a_semantico():
             elif(c[0] == '('):
                     pilha_op.empilha('(')
             #
-            elif(c[0] == ')' or c[0] == ';' or c[0] == 'then' or c[0] == ','):
+            elif(c[0] == ')' or c[0] == ';' or c[0] == 'then' or c[0] == ',' or c[0] == 'do'):
                 while True:
                     t = pilha_op.desempilha()
                     if(t != '('):
@@ -137,6 +137,12 @@ class a_semantico():
             self.token = self.get_pensamento()
             #
             self.statm()
+            #
+            if(self.token[self.i][0] == 'end'):
+                    self.token = self.get_pensamento()
+                    if(self.token[self.i][0] == '.'):
+                        self.codigo_mepa.append("PARA")
+            #END end
     #
     #
     #
@@ -151,7 +157,42 @@ class a_semantico():
             #aqui acabou o begin .. end;
             #
         #
-        if(self.token[self.i][0] == 'write'):
+        elif(self.token[self.i][0] == 'while'):
+            n_rotulo = self.rotulo
+            codigo = "L"+str(n_rotulo)+" NADA"
+            self.rotulo += 1
+            n_rotulo += 1
+            self.codigo_mepa.append(codigo)
+            self.i+=1
+            #
+            #aqui devo chamar a realiza_exp
+            #
+            exp = []
+            while(True):
+                exp.append(self.token[self.i])
+                self.i += 1
+                if(self.token[self.i][0] == 'do'):
+                    exp.append(self.token[self.i])
+                    break
+            #
+            self.realiza_exp(exp)
+            #
+            # devo add uma chamada ao prox label para sair do while
+            #
+            codigo = "DSVF L"+str(n_rotulo)
+            self.rotulo += 1
+            self.codigo_mepa.append(codigo)
+            #
+            self.token = self.get_pensamento()
+            self.statm()
+            #devo add uma chamada ao primeiro label, para fazer o looping
+            codigo = "DVSV L"+str((n_rotulo-1))
+            self.codigo_mepa.append(codigo)
+            codigo = "L"+str((n_rotulo)) + " NADA"
+            self.codigo_mepa.append(codigo)
+
+        #
+        elif(self.token[self.i][0] == 'write'):
             #write(a,b*c);
             self.i += 1 # >>> (
             self.i += 1
@@ -181,7 +222,7 @@ class a_semantico():
 
         #end write
         #
-        if(self.token[self.i][0] == 'read'):
+        elif(self.token[self.i][0] == 'read'):
             #read(a,b);
             self.i += 1 #aqui será um parenteses
             self.i += 1 #será a primeira variavel
@@ -206,7 +247,7 @@ class a_semantico():
             self.statm()
 
         #end read
-        if(self.token[0][1] == 'ID'):
+        elif(self.token[0][1] == 'ID'):
             #
             #possível atribuição
             #
@@ -268,11 +309,6 @@ class a_semantico():
             self.token = self.get_pensamento()
             self.statm()
         #end else
-        elif(self.token[0][0] == 'end'):
-            self.token = self.get_pensamento()
-            if(self.token[0][0] == '.'):
-                self.codigo_mepa.append("PARA")
-        #END end
     #
     #
     #
