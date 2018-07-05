@@ -40,12 +40,15 @@ class pilha_pol:
             return None
 
 
-opera = 'a>b;'
+opera = 'a>b;' #expresao:: (a+b)*c
 print(opera)
 i = 0
 p = pilha_pol()
 p.empilha('(')
 j = len(opera)
+#
+#pos-fixa
+#
 while(i<j):
     c = opera[i]
     i += 1
